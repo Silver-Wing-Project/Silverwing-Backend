@@ -41,3 +41,7 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
+
+# Python Virtual Environment
+/venv
+*.pyc
