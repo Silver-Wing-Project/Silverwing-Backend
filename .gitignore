@@ -46,3 +46,10 @@ lerna-debug.log*
 /venv
 *.pyc
 */__pycache__
+
+# Git and GitHub
+.git
+.github/pr_workflows/
+.github/CODEOWNERS
+.github/pull_request_template.md
+.github/PR_DESCRIPTION.md
