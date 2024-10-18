@@ -45,3 +45,4 @@ lerna-debug.log*
 # Python Virtual Environment
 /venv
 *.pyc
+*/__pycache__
