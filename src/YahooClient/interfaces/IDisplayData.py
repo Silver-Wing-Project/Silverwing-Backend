@@ -13,8 +13,8 @@ from interfaces.IFinanceClient import IFinanceClient
 # This method will generate a plot of dividends using matplotlib.
 
 class IDisplayData:
+    
     def __init__(self):
-        # self.cache = {} # Simple in-memory cache for development purposes
         self.finance_client = IFinanceClient()
 
     # Set the style for the plots
