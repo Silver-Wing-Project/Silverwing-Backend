@@ -6,17 +6,9 @@ class IFinanceClient:
     """
     IFinanceClient is an interface that defines methods for fetching financial data,
     such as stock prices, financial reports, and dividends. It uses DataFetcher to
-    fetch data from Yahoo Finance. It is used by the IDisplayData interface to display data.
-    
-    Attributes:
-        cache (dict): A simple in-memory cache for development purposes.
+    fetch data from Yahoo Finance. It is used by the IDisplayData interface to display data.    
     """
 
-    def __init__(self):
-        """
-        Initializes the IFinanceClient with an empty cache.
-        """
-        # self.cache = {}
 
     async def get_stock_prices(
         self, 
