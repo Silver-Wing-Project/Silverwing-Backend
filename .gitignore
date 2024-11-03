@@ -45,7 +45,7 @@ lerna-debug.log*
 # Python Virtual Environment
 /venv
 *.pyc
-*/__pycache__
+__pycache__
 
 # Git and GitHub
 .git
