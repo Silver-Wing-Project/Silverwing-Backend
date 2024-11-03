@@ -16,10 +16,10 @@ async def main():
     data_manager = FinanceDataManager(finance_client)
     plotter = FinanceDataPlotter(display_data)
 
-    await data_manager.fetch_and_save_stock_prices(TICKER, start_date, end_date)
+    # await data_manager.fetch_and_save_stock_prices(TICKER, start_date, end_date)
     await plotter.plot_stock_prices(TICKER, start_date, end_date)
 
-    await data_manager.fetch_and_save_dividends(TICKER, start_date, end_date)
+    # await data_manager.fetch_and_save_dividends(TICKER, start_date, end_date)
     await plotter.plot_dividends(TICKER, start_date, end_date)
 
 if __name__ == "__main__":
