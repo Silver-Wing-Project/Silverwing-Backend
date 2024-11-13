@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { PythonExecutorService } from '../python-executor/python-executor.service';
+import { PythonExecutorService } from './python-executor.service';
 
 @Controller('python')
 export class PythonController {
