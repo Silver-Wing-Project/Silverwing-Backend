@@ -28,7 +28,7 @@ class IFinanceClient:
         return result
         # return await DataFetcher.fetch_stock_prices(ticker, start_date, end_date)
         
-    async def get_stock_reports(self, ticker: str, report_type: str = 'financials') -> Dict:
+    async def get_stock_reports(self, ticker: str, report_type: str) -> Dict:
         """
         Fetches financial reports for a given ticker symbol.
         

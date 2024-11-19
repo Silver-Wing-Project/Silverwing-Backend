@@ -2,6 +2,11 @@ import yfinance as yf
 from datetime import datetime
 from typing import Dict
 import json
+import os
+import sys
+
+# Add the parent directory to the sys.path to resolve the common module
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from common.utils import DateTimeEncoder
 
 class DataFetcher:
@@ -38,15 +43,15 @@ class DataFetcher:
             data_json = json.dumps(price_data, cls=DateTimeEncoder)
             return data_json
         except Exception as e:
-            print(json.dumps({'error': str(e)}))
-            return json.dumps({'error': str(e)})
+            error_message = json.dumps({'error': str(e)})
+            print(error_message)
+            return error_message
 
     
     @staticmethod
-    async def fetch_stock_reports(ticker: str, report_type: str = 'financials') -> Dict:
+    async def fetch_stock_reports(ticker: str, report_type: str) -> Dict:
         """
         Fetch financial reports for a given ticker.
-        report_type can be 'financials', 'balance_sheet', or 'cash_flow'
         """
         try:
             stock = yf.Ticker(ticker)
@@ -70,11 +75,12 @@ class DataFetcher:
                 'data': json.loads(df.to_json(date_format='iso'))
             }
             
-            print(report_data)
-            return json.dumps(report_data, cls=DateTimeEncoder)
+            result = json.dumps(report_data, cls=DateTimeEncoder)
+            return result
         except Exception as e:
-            print(json.dumps({'error': str(e)}))
-            return json.dumps({'error': str(e)})
+            error_message = json.dumps({'error': str(e)})
+            print(error_message)
+            return error_message
 
 
     @staticmethod
@@ -98,5 +104,6 @@ class DataFetcher:
             result = json.dumps(dividends_data, cls=DateTimeEncoder, indent=4)
             return result
         except Exception as e:
-            print(json.dumps({'error': str(e)}))
-            return json.dumps({'error': str(e)})
+            error_message = json.dumps({'error': str(e)})
+            print(error_message)
+            return error_message
