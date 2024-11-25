@@ -8,7 +8,7 @@ export class StockReport {
   @Prop({ required: true, index: true })
   ticker: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   date: Date;
 
   @Prop({ required: true })

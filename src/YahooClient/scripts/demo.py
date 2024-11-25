@@ -27,7 +27,9 @@ async def main():
     # await data_manager.fetch_and_save_dividends(TICKER, start_date, end_date)
     # await plotter.plot_dividends(TICKER, start_date, end_date)
 
+
     await data_manager.fetch_and_save_financial_reports(TICKER, 'financials')
+
 
 if __name__ == "__main__":
     asyncio.run(main())
