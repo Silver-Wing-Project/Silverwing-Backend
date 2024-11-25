@@ -5,8 +5,6 @@ import { StockReport, StockReportSchema } from './schemas/stock-report.schema';
 import { PythonExecutorService } from './python/python-executor.service';
 import { FinanceService } from './services/finance.service';
 import { FinanceController } from './controllers/finance.controller';
-import { TestStockService } from './services/test-stock.service';
-import { TestStockController } from './controllers/test-stock.controller';
 
 
 @Module({
@@ -16,7 +14,7 @@ import { TestStockController } from './controllers/test-stock.controller';
       { name: StockReport.name, schema: StockReportSchema },
     ]),
   ],
-  controllers: [TestStockController, FinanceController],
-  providers: [PythonExecutorService, TestStockService, FinanceService],
+  controllers: [FinanceController],
+  providers: [PythonExecutorService, FinanceService],
 })
 export class YahooFinanceModule {}
