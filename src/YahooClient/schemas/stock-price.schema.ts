@@ -1,29 +1,41 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { IsString, IsDate, IsNumber } from 'class-validator';
 
 export type StockPriceDocument = StockPrice & Document;
 
 @Schema()
 export class StockPrice {
-  @Prop({ required: true, index: true })
+  @IsString()
+  @Prop({ required: true, type: String })
+  _id: string;
+
+  @IsString()
+  @Prop({ required: true, index: true, type: String })
   ticker: string;
 
-  @Prop({ required: true, index: true })
+  @IsDate()
+  @Prop({ required: true, index: true, type: Date })
   date: Date;
 
-  @Prop({ required: true })
+  @IsNumber()
+  @Prop({ required: true , type: Number })
   open: number;
 
-  @Prop({ required: true })
+  @IsNumber()
+  @Prop({ required: true, type: Number })
   close: number;
 
-  @Prop({ required: true })
+  @IsNumber()
+  @Prop({ required: true, type: Number })
   high: number;
 
-  @Prop({ required: true })
+  @IsNumber()
+  @Prop({ required: true, type: Number })
   low: number;
 
-  @Prop({ required: true })
+  @IsNumber()
+  @Prop({ required: true, type: Number })
   volume: number;
 }
 
