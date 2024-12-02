@@ -8,21 +8,12 @@ from common.config import get_stock_prices_csv, get_dividends_csv, get_financial
 from common.utils import DateTimeEncoder
 
 
-class DateTimeEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            return obj.isoformat()
-        return super().default(obj)
-
-
 class DataManager:
     def __init__(self, finance_client: IFinanceClient):
         self.finance_client = finance_client
 
-
     async def fetch_and_save_stock_prices(self, ticker, start_date, end_date):
         stock_prices = await self.finance_client.get_stock_prices(ticker, start_date, end_date)
-        print("Stock Prices fetched successfully")
 
         if isinstance(stock_prices, str):
             stock_prices = json.loads(stock_prices)
@@ -33,7 +24,6 @@ class DataManager:
 
     async def fetch_and_save_dividends(self, ticker, start_date, end_date):
         dividends = await self.finance_client.get_stock_dividends(ticker, start_date, end_date)
-        print("Dividends fetched successfully.")
 
         if isinstance(dividends, str):
             dividends = json.loads(dividends)
@@ -45,14 +35,12 @@ class DataManager:
 
     async def fetch_and_save_financial_reports(self, ticker, report_type):
         financial_report = await self.finance_client.get_stock_reports(ticker, report_type)
-        print("Financial Report fetched successfully.")
 
         if isinstance(financial_report, str):
             financial_report = json.loads(financial_report)
 
         # Ensure the directory exists
         json_dir = os.path.dirname(get_financial_report_json(ticker))
-        print(f"Ensuring directory exists: {json_dir}")
         os.makedirs(json_dir, exist_ok=True)
 
         with open(get_financial_report_json(ticker), 'w') as json_file:
