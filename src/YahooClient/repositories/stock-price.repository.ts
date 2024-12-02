@@ -12,8 +12,16 @@ export class StockPriceRepository {
     return createdStockPrice.save();
   }
 
+  async createMany(stockPrices: StockPrice[]): Promise<StockPrice[]> {
+    return this.stockPriceModel.insertMany(stockPrices);
+  }
+
   async findAll(): Promise<StockPrice[]> {
     return this.stockPriceModel.find().exec();
+  }
+
+  async findMany(query: any): Promise<StockPrice[]> {
+    return this.stockPriceModel.find(query).exec();
   }
 
   async findOne(id: string): Promise<StockPrice> {
@@ -26,5 +34,9 @@ export class StockPriceRepository {
 
   async delete(id: string): Promise<StockPrice> {
     return this.stockPriceModel.findByIdAndDelete(id).exec();
+  }
+
+  async deleteMany(stockPrices: StockPrice[]): Promise<any> {
+    return this.stockPriceModel.deleteMany(stockPrices).exec();
   }
 }
