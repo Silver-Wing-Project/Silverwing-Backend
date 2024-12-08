@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { StockPriceRepository } from '../repositories/stock-price.repository';
 import { StockReportRepository } from '../repositories/stock-report.repository';
 import { CreateStockPriceDto } from '../dto/create-stock-price.dto';
 import { CreateStockReportDto } from '../dto/create-stock-report.dto';
+import { UpdateStockPriceDto } from '../dto/update-stock-price.dto';
+import { UpdateStockReportDto } from '../dto/update-stock-report.dto';
 import { plainToClass } from 'class-transformer';
 import { StockPrice } from '../schemas/stock-price.schema';
 import { StockReport } from '../schemas/stock-report.schema';
@@ -40,13 +42,13 @@ export class StockService {
     return this.stockReportRepository.findOne(id);
   }
 
-  async updateStockPrice(id: string, createStockPriceDto: CreateStockPriceDto): Promise<StockPrice> {
-    const stockPrice = plainToClass(StockPrice, createStockPriceDto);
+  async updateStockPrice(id: string, updateStockPriceDto: UpdateStockPriceDto): Promise<StockPrice> {
+    const stockPrice = plainToClass(StockPrice, updateStockPriceDto);
     return this.stockPriceRepository.update(id, stockPrice);
   }
 
-  async updateStockReport(id: string, createStockReportDto: CreateStockReportDto): Promise<StockReport> {
-    const stockReport = plainToClass(StockReport, createStockReportDto);
+  async updateStockReport(id: string, updateStockReportDto: UpdateStockReportDto): Promise<StockReport> {
+    const stockReport = plainToClass(StockReport, updateStockReportDto);
     return this.stockReportRepository.update(id, stockReport);
   }
 

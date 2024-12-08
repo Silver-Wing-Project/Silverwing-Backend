@@ -1,28 +1,33 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { IsString, IsDate } from 'class-validator';
+import { IsString, IsDate, IsNotEmpty } from 'class-validator';
 
 export type StockReportDocument = StockReport & Document;
 
 @Schema()
 export class StockReport {
   @IsString()
+  @IsNotEmpty()
   @Prop({ required: true, type: String })
   _id: string;
 
   @IsString()
+  @IsNotEmpty()
   @Prop({ required: true, index: true, type: String })
   ticker: string;
 
   @IsDate()
+  @IsNotEmpty()
   @Prop({ required: true, index: true, type: Date })
   date: Date;
 
   @IsString()
+  @IsNotEmpty()
   @Prop({ required: true, type: String })
   reportType: string;
 
   @IsString()
+  @IsNotEmpty()
   @Prop({ required: true, type: String })
   content: string;
 }

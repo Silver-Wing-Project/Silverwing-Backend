@@ -1,10 +1,10 @@
 import { IsString, IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateStockReportDto {
+export class UpdateStockReportDto{
   @IsString()
-  _id: string
-  
+  _id: string;
+
   @IsString()
   ticker: string;
 

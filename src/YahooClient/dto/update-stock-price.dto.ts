@@ -1,7 +1,7 @@
 import { IsString, IsDate, IsNumber } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateStockPriceDto {
+export class UpdateStockPriceDto {
   @IsString()
   _id: string;
 
