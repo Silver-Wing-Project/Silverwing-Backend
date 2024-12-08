@@ -3,6 +3,9 @@ import { Type } from 'class-transformer';
 
 export class CreateStockPriceDto {
   @IsString()
+  _id: string;
+
+  @IsString()
   ticker: string;
 
   @IsDate()
