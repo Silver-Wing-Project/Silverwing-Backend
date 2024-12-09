@@ -23,7 +23,8 @@
     "test:IFinanceClient": "pytest src/YahooClient/tests/IFinanceClient.test.py",
     "test:stock-price-repository": "jest src/YahooClient/tests/stock-price.repository.test.ts",
     "test:stock-report-repository": "jest src/YahooClient/tests/stock-report.repository.test.ts",
-    "test:stock-repositories": "npm run test:stock-price-repository && npm run test:stock-report-repository"
+    "test:stock-repositories": "npm run test:stock-price-repository && npm run test:stock-report-repository",
+    "test:stock-service": "jest src/YahooClient/tests/stock.service.test.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
