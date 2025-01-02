@@ -20,12 +20,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:all": "npm run test && pytest",
-    "test:data-fetcher": "pytest src/YahooClient/tests/data_fetcher.test.py",
-    "test:IFinanceClient": "pytest src/YahooClient/tests/IFinanceClient.test.py",
-    "test:stock-price-repository": "jest src/YahooClient/tests/stock-price.repository.test.ts",
-    "test:stock-report-repository": "jest src/YahooClient/tests/stock-report.repository.test.ts",
+    "test:stock-price-repository": "jest src/yahoo-client/stock/tests/stock-price.repository.test.ts",
+    "test:stock-report-repository": "jest src/yahoo-client/stock/tests/stock-report.repository.test.ts",
+    "test:stock-price-service": "jest src/yahoo-client/stock/stock-price/stock-price.service.spec.ts",
+    "test:stock-report-service": "jest src/yahoo-client/stock/stock-report/stock-report.service.spec.ts",
     "test:stock-repositories": "npm run test:stock-price-repository && npm run test:stock-report-repository",
-    "test:stock-service": "jest src/YahooClient/tests/stock.service.test.ts"
+    "test:python-data-manager": "pytest src/yahoo-client/utility/python/tests/test_data_manager.py"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -68,7 +68,8 @@
     "moduleFileExtensions": [
       "js",
       "json",
-      "ts"
+      "ts",
+      "py"
     ],
     "rootDir": "src",
     "testRegex": ".*\\.(spec|test)\\.ts$",
