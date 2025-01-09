@@ -155,8 +155,6 @@ describe('StockPriceRepository', () => {
     const ids = mockStockPrices.map((stockPrice) => stockPrice._id);
     const result = await stockPriceRepository.deleteMany(ids);
     expect(result).toEqual({ deletedCount: 2 });
-    expect(stockPriceRepository.deleteMany).toHaveBeenCalledWith(
-      mockStockPrices,
-    );
+    expect(stockPriceRepository.deleteMany).toHaveBeenCalledWith(ids);
   });
 });
