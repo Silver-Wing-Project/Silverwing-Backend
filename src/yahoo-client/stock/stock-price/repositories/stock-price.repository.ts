@@ -5,6 +5,7 @@ import {
   StockPrice,
   StockPriceDocument,
 } from '../../stock-price/entities/stock-price.schema';
+import { parseDate } from '../../../utility/date-parser/date-parser.utils';
 
 @Injectable()
 export class StockPriceRepository {
@@ -25,6 +26,7 @@ export class StockPriceRepository {
    * @returns {Promise<StockPrice>} A promise that resolves to the created stock price.
    */
   async create(stockPrice: StockPrice): Promise<StockPrice> {
+    stockPrice.date = parseDate(stockPrice.date);
     const createdStockPrice = new this.stockPriceModel(stockPrice);
     return createdStockPrice.save();
   }
@@ -36,6 +38,9 @@ export class StockPriceRepository {
    * @returns {Promise<StockPrice[]>} A promise that resolves to the inserted stock price objects.
    */
   async createMany(stockPrices: StockPrice[]): Promise<StockPrice[]> {
+    stockPrices.forEach((stockPrice) => {
+      stockPrice.date = parseDate(stockPrice.date);
+    });
     return this.stockPriceModel.insertMany(stockPrices);
   }
 
@@ -76,9 +81,8 @@ export class StockPriceRepository {
    * @returns A promise that resolves to the updated stock price document.
    */
   async update(id: string, stockPrice: StockPrice): Promise<StockPrice> {
-    return this.stockPriceModel
-      .findByIdAndUpdate(id, stockPrice, { new: true })
-      .exec();
+    stockPrice.date = parseDate(stockPrice.date);
+    return this.stockPriceModel.findByIdAndUpdate(id, stockPrice, { new: true }).exec();
   }
 
   /**

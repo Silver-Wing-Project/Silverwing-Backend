@@ -5,6 +5,7 @@ import {
   StockReport,
   StockReportDocument,
 } from '../entities/stock-report.schema';
+import { parseDate } from '../../../utility/date-parser/date-parser.utils';
 
 @Injectable()
 export class StockReportRepository {
@@ -25,6 +26,7 @@ export class StockReportRepository {
    * @returns {Promise<StockReport>} A promise that resolves to the created stock report.
    */
   async create(stockReport: StockReport): Promise<StockReport> {
+    stockReport.date = parseDate(stockReport.date);
     const createdStockReport = new this.stockReportModel(stockReport);
     return createdStockReport.save();
   }
@@ -36,6 +38,9 @@ export class StockReportRepository {
    * @returns {Promise<StockReport[]>} A promise that resolves to the inserted stock reports.
    */
   async createMany(stockReports: StockReport[]): Promise<StockReport[]> {
+    stockReports.forEach((stockReport) => {
+      stockReport.date = parseDate(stockReport.date);
+    });
     return this.stockReportModel.insertMany(stockReports);
   }
 
@@ -76,9 +81,8 @@ export class StockReportRepository {
    * @returns A promise that resolves to the updated stock report.
    */
   async update(id: string, stockReport: StockReport): Promise<StockReport> {
-    return this.stockReportModel
-      .findByIdAndUpdate(id, stockReport, { new: true })
-      .exec();
+    stockReport.date = parseDate(stockReport.date);
+    return this.stockReportModel.findByIdAndUpdate(id, stockReport, { new: true }).exec();
   }
 
   /**
