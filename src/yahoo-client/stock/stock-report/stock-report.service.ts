@@ -10,6 +10,7 @@ import { CreateStockReportDto } from './dto/create-stock-report.dto';
 import { UpdateStockReportDto } from './dto/update-stock-report.dto';
 import { StockReport } from './entities/stock-report.schema';
 import { plainToClass } from 'class-transformer';
+import { parseDate } from '../../utility/date-parser/date-parser.utils';
 
 @Injectable()
 export class StockReportService {
@@ -17,6 +18,15 @@ export class StockReportService {
 
   constructor(private readonly stockReportRepository: StockReportRepository) {}
 
+  /**
+   * Creates a new stock report.
+   * 
+   * @param {CreateStockReportDto} createStockReportDto - The data transfer object containing the details of the stock report to be created.
+   * @returns {Promise<StockReport>} A promise that resolves to the created stock report.
+   * 
+   * @throws {BadRequestException} If the createStockReportDto is not provided.
+   * @throws {InternalServerErrorException} If there is an error creating the stock report.
+   */
   async createStockReport(
     createStockReportDto: CreateStockReportDto,
   ): Promise<StockReport> {
@@ -38,6 +48,13 @@ export class StockReportService {
     }
   }
 
+  /**
+   * Creates multiple stock reports.
+   *
+   * @param {CreateStockReportDto[]} createStockReportDtos - An array of DTOs for creating stock reports.
+   * @returns {Promise<StockReport[]>} A promise that resolves to an array of created stock reports.
+   * @throws {InternalServerErrorException} If there is an error during the creation of stock reports.
+   */
   async createManyStockReports(
     createStockReportDtos: CreateStockReportDto[],
   ): Promise<StockReport[]> {
@@ -62,16 +79,36 @@ export class StockReportService {
     }
   }
 
+  /**
+   * Retrieves all stock reports from the repository.
+   *
+   * @returns {Promise<StockReport[]>} A promise that resolves to an array of StockReport objects.
+   * @throws {InternalServerErrorException} If an error occurs while retrieving the stock reports.
+   */
   async findAllStockReports(): Promise<StockReport[]> {
     try {
-      this.logger.log('Finding all stock reports');
-      return await this.stockReportRepository.findAll();
+      this.logger.log('Retrieving all stock reports');
+
+      const stockReports = await this.stockReportRepository.findAll();
+      stockReports.forEach((report) => (report.date = parseDate(report.date)));
+      
+      return stockReports;
     } catch (error) {
       this.logger.error('Error finding all stock reports', error.stack);
       throw new InternalServerErrorException('Error finding all stock reports');
     }
   }
 
+  /**
+   * Finds multiple stock reports based on the provided ticker and report type.
+   *
+   * @param {string} ticker - The stock ticker symbol.
+   * @param {string} reportType - The type of the stock report.
+   * @returns {Promise<StockReport[]>} A promise that resolves to an array of StockReport objects.
+   * @throws {BadRequestException} If the ticker or reportType is missing.
+   * @throws {NotFoundException} If no stock reports are found for the given ticker and reportType.
+   * @throws {InternalServerErrorException} If an error occurs while finding the stock reports.
+   */
   async findManyStockReports(
     ticker: string,
     reportType: string,
@@ -94,6 +131,7 @@ export class StockReportService {
           `Stock reports with ticker: ${ticker}, reportType: ${reportType} not found`,
         );
       }
+      existingReports.forEach((report) => (report.date = parseDate(report.date)));
       return existingReports;
     } catch (error) {
       this.logger.error('Error finding multiple stock reports', error.stack);
@@ -103,6 +141,15 @@ export class StockReportService {
     }
   }
 
+  /**
+   * Finds a stock report by its ID.
+   *
+   * @param _id - The ID of the stock report to find.
+   * @returns A promise that resolves to the found StockReport.
+   * @throws {BadRequestException} If the _id parameter is missing.
+   * @throws {NotFoundException} If no stock report is found with the given ID.
+   * @throws {InternalServerErrorException} If an error occurs while finding the stock report.
+   */
   async findStockReportById(_id: string): Promise<StockReport> {
     try {
       if (!_id) 
@@ -113,6 +160,7 @@ export class StockReportService {
       if (!stockReport) {
         throw new NotFoundException(`Stock report with ID: ${_id} not found`);
       }
+      stockReport.date = parseDate(stockReport.date);
       return stockReport;
     } catch (error) {
       this.logger.error(`Error finding stock report by ID ${_id}`, error.stack);
@@ -122,6 +170,15 @@ export class StockReportService {
     }
   }
 
+  /**
+   * Updates an existing stock report with the provided data.
+   *
+   * @param _id - The unique identifier of the stock report to update.
+   * @param updateStockReportDto - The data transfer object containing the updated stock report information.
+   * @returns A promise that resolves to the updated stock report.
+   * @throws {BadRequestException} If the _id or updateStockReportDto is missing.
+   * @throws {InternalServerErrorException} If an error occurs while updating the stock report.
+   */
   async updateStockReport(
     _id: string,
     updateStockReportDto: UpdateStockReportDto,
@@ -148,6 +205,14 @@ export class StockReportService {
     }
   }
 
+  /**
+   * Deletes a stock report by its ID.
+   *
+   * @param _id - The ID of the stock report to delete.
+   * @returns A promise that resolves to the result of the delete operation.
+   * @throws {BadRequestException} If the _id parameter is missing.
+   * @throws {InternalServerErrorException} If an error occurs during the delete operation.
+   */
   async deleteStockReport(_id: string): Promise<any> {
     try {
       if (!_id) 
@@ -164,6 +229,14 @@ export class StockReportService {
     }
   }
 
+  /**
+   * Deletes multiple stock reports based on the provided IDs.
+   *
+   * @param {string[]} ids - An array of stock report IDs to be deleted.
+   * @returns {Promise<any>} A promise that resolves when the deletion is complete.
+   * @throws {BadRequestException} If the `ids` array is missing or empty.
+   * @throws {InternalServerErrorException} If an error occurs during the deletion process.
+   */
   async deleteManyStockReports(ids: string[]): Promise<any> {
     try {
       if (!ids || ids.length === 0)
