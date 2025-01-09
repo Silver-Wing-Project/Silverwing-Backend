@@ -1,5 +1,6 @@
 import { IsString, IsDate, IsNotEmpty, IsObject } from 'class-validator';
 import { Type } from 'class-transformer';
+import { parseDate } from '../../../utility/date-parser/date-parser.utils';
 
 export class CreateStockReportDto {
   @IsString()
@@ -22,4 +23,9 @@ export class CreateStockReportDto {
   @IsNotEmpty()
   @IsObject()
   content: Record<string, any>;
+
+  constructor(partial: Partial<CreateStockReportDto>) {
+    Object.assign(this, partial);
+    this.date = parseDate(this.date);
+  }
 }
