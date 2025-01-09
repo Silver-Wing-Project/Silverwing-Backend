@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StockPriceRepository } from '../stock-price/repositories/stock-price.repository';
 import { StockPrice } from '../stock-price/entities/stock-price.schema';
+import { parseDate } from '../../utility/date-parser/date-parser.utils';
 
 describe('StockPriceRepository', () => {
   let stockPriceRepository: StockPriceRepository;
@@ -8,7 +9,7 @@ describe('StockPriceRepository', () => {
   const mockStockPrice: StockPrice = {
     _id: '507f1f77bcf86cd799439011',
     ticker: 'AAPL',
-    date: new Date('2021-01-01'),
+    date: parseDate('2021-01-01'),
     open: 100,
     high: 110,
     low: 90,
