@@ -46,7 +46,6 @@ export class StockPriceService {
         );
 
       const stockPrice = plainToClass(StockPrice, createStockPriceDto);
-      stockPrice.date = parseDate(stockPrice.date);
       this.logger.log(
         'Creating a new stock price', 
         JSON.stringify(stockPrice)
@@ -75,7 +74,6 @@ export class StockPriceService {
     try {
       const stockPrices = createStockPriceDtos.map((dto) => {
         const stockPrice = plainToClass(StockPrice, dto);
-        stockPrice.date = parseDate(stockPrice.date);
         return stockPrice;
       });
       return await this.stockPriceRepository.createMany(stockPrices);
@@ -99,7 +97,6 @@ export class StockPriceService {
       this.logger.log('Finding all stock prices');
       
       const stockPrices = await this.stockPriceRepository.findAll();
-      stockPrices.forEach((stockPrice) => (stockPrice.date = parseDate(stockPrice.date)));
 
       return stockPrices;
     } catch (error) {
@@ -176,7 +173,6 @@ export class StockPriceService {
       if (!stockPrice) {
         throw new NotFoundException(errorMessages.FAILED_TO_GET_STOCK_PRICE_BY_ID);
       }
-      stockPrice.date = parseDate(stockPrice.date);
       return stockPrice;
     } catch (error) {
       this.logger.error(`Error finding stock price by ID ${_id}`, error.stack);
@@ -211,7 +207,6 @@ export class StockPriceService {
       );
 
       const stockPrice = plainToClass(StockPrice, updateStockPriceDto);
-      stockPrice.date = parseDate(stockPrice.date);
       this.logger.log(
         `Updating stock price with ID ${_id}`,
         JSON.stringify(stockPrice),
