@@ -11,12 +11,19 @@ import { UpdateStockPriceDto } from './dto/update-stock-price.dto';
 import { StockPrice } from './entities/stock-price.schema';
 import { plainToClass } from 'class-transformer';
 import { parseDate } from '../../utility/date-parser/date-parser.utils';
+import { errorMessages } from '../../utility/constants/constants';
+import { ServiceErrorHandler } from './utils/service-error.handler';
 
 @Injectable()
 export class StockPriceService {
   private readonly logger = new Logger(StockPriceService.name);
+  private readonly serviceErrorHandler: ServiceErrorHandler;
 
-  constructor(private readonly stockPriceRepository: StockPriceRepository) {}
+  constructor(
+    private readonly stockPriceRepository: StockPriceRepository,
+  ) {
+    this.serviceErrorHandler = new ServiceErrorHandler(this.logger);
+  }
 
   /**
    * Creates a new stock price entry in the repository.
@@ -31,22 +38,23 @@ export class StockPriceService {
     createStockPriceDto: CreateStockPriceDto,
   ): Promise<StockPrice> {
     try {
-      if (!createStockPriceDto) {
-        throw new BadRequestException(
-          'Missing required body parameter: createStockPriceDto',
+      if (!createStockPriceDto) 
+        return this.serviceErrorHandler.handleBusinessError(
+          new BadRequestException(errorMessages.MISSING_CREATE_STOCK_PRICE_DTO),
+          'createStockPrice',
+          errorMessages.FAILED_TO_CREATE_STOCK_PRICE
         );
-      }
 
       const stockPrice = plainToClass(StockPrice, createStockPriceDto);
       stockPrice.date = parseDate(stockPrice.date);
-      this.logger.log(
-        'Creating a new stock price', 
-        JSON.stringify(stockPrice)
-      );
+      this.logger.log('Creating a new stock price', JSON.stringify(stockPrice));
       return await this.stockPriceRepository.create(stockPrice);
     } catch (error) {
-      this.logger.error('Error creating stock price', error.stack);
-      throw new InternalServerErrorException('Error creating stock price');
+      return this.serviceErrorHandler.handleBusinessError(
+        error,
+        'createStockPrice',
+        errorMessages.FAILED_TO_CREATE_STOCK_PRICE,
+      )
     }
   }
 
@@ -62,10 +70,6 @@ export class StockPriceService {
     createStockPriceDtos: CreateStockPriceDto[],
   ): Promise<StockPrice[]> {
     try {
-      if(!Array.isArray(createStockPriceDtos)) {
-        createStockPriceDtos = [createStockPriceDtos];
-      }
-  
       const stockPrices = createStockPriceDtos.map((dto) => {
         const stockPrice = plainToClass(StockPrice, dto);
         stockPrice.date = parseDate(stockPrice.date);
@@ -73,9 +77,10 @@ export class StockPriceService {
       });
       return await this.stockPriceRepository.createMany(stockPrices);
     } catch (error) {
-      this.logger.error('Error creating multiple stock prices', error.stack);
-      throw new InternalServerErrorException(
-        'Error creating multiple stock prices',
+      return this.serviceErrorHandler.handleRepositoryError(
+        error,
+        'createManyStockPrices',
+        errorMessages.FAILED_TO_CREATE_MANY_STOCK_PRICES,
       );
     }
   }
@@ -95,8 +100,11 @@ export class StockPriceService {
 
       return stockPrices;
     } catch (error) {
-      this.logger.error('Error finding all stock prices', error.stack);
-      throw new InternalServerErrorException('Error finding all stock prices');
+      return this.serviceErrorHandler.handleRepositoryError(
+        error,
+        'findAllStockPrices',
+        errorMessages.FAILED_TO_GET_ALL_STOCK_PRICES,
+      );
     }
   }
 
@@ -118,14 +126,13 @@ export class StockPriceService {
   ): Promise<StockPrice[]> {
     try {
       if (!ticker || !startDate || !endDate) {
-        throw new BadRequestException(
-          'Missing required query parameters: ticker, startDate, endDate',
-        );
+        throw new BadRequestException(errorMessages.MISSING_QUERY_PARAMS_PRICE);
       }
 
       this.logger.log(
         `Finding multiple stock prices with ticker: ${ticker}, startDate: ${startDate}, endDate: ${endDate}`,
       );
+
       const existingPrices = await this.stockPriceRepository.findMany({
         ticker,
         date: {
@@ -133,16 +140,16 @@ export class StockPriceService {
           $lte: parseDate(endDate),
         },
       });
-      if (!existingPrices) {
-        throw new NotFoundException(
-          `Stock prices with ticker: ${ticker}, startDate: ${startDate}, endDate: ${endDate} not found`,
-        );
+
+      if(!existingPrices) {
+        throw new NotFoundException(errorMessages.FAILED_TO_GET_MANY_STOCK_PRICES);
       }
       return existingPrices;
     } catch (error) {
-      this.logger.error('Error finding multiple stock prices', error.stack);
-      throw new InternalServerErrorException(
-        'Error finding multiple stock prices',
+      return this.serviceErrorHandler.handleBusinessError(
+        error,
+        'findManyStockPrices',
+        errorMessages.FAILED_TO_GET_MANY_STOCK_PRICES,
       );
     }
   }
@@ -159,18 +166,25 @@ export class StockPriceService {
   async findStockPriceById(_id: string): Promise<StockPrice> {
     try {
       if (!_id) 
-        throw new BadRequestException('Missing required path parameter: _id ');
+        throw new BadRequestException(errorMessages.MISSING_ID_PARAM);
 
       this.logger.log(`Finding stock price by ID: ${_id}`);
       const stockPrice = await this.stockPriceRepository.findOne(_id);
       if (!stockPrice) {
-        throw new NotFoundException(`Stock price with ID: ${_id} not found`);
+        throw new NotFoundException(errorMessages.FAILED_TO_GET_STOCK_PRICE_BY_ID);
       }
       stockPrice.date = parseDate(stockPrice.date);
       return stockPrice;
     } catch (error) {
       this.logger.error(`Error finding stock price by ID ${_id}`, error.stack);
-      throw new InternalServerErrorException('Error finding stock price by ID');
+      switch (true) {
+        case error instanceof BadRequestException:
+          throw error;
+        case error instanceof NotFoundException:
+          throw error;
+        default:
+          throw new InternalServerErrorException(errorMessages.FAILED_TO_GET_STOCK_PRICE_BY_ID);
+      }
     }
   }
 
@@ -190,7 +204,7 @@ export class StockPriceService {
     try {
       if (!_id || !updateStockPriceDto)
         throw new BadRequestException(
-          'Missing required path parameter: _id or body parameter: updateStockPriceDto'
+          errorMessages.MISSING_UPDATE_STOCK_PRICE_DTO
       );
 
       const stockPrice = plainToClass(StockPrice, updateStockPriceDto);
@@ -205,7 +219,10 @@ export class StockPriceService {
         `Error updating stock price with ID ${_id}`,
         error.stack,
       );
-      throw new InternalServerErrorException('Error updating stock price');
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(errorMessages.FAILED_TO_UPDATE_STOCK_PRICE);
     }
   }
 
@@ -220,7 +237,7 @@ export class StockPriceService {
   async deleteStockPrice(_id: string): Promise<StockPrice> {
     try {
       if(!_id)
-        throw new BadRequestException('Missing required path parameter: _id');
+        throw new BadRequestException(errorMessages.MISSING_ID_PARAM);
 
 
       this.logger.log(`Deleting stock price with ID ${_id}`);
@@ -230,7 +247,10 @@ export class StockPriceService {
         `Error deleting stock price with ID ${_id}`,
         error.stack,
       );
-      throw new InternalServerErrorException('Error deleting stock price');
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(errorMessages.FAILED_TO_DELETE_STOCK_PRICE);
     }
   }
 
@@ -245,7 +265,7 @@ export class StockPriceService {
   async deleteManyStockPrices(ids: string[]): Promise<any> {
     try {
       if (!ids || ids.length === 0) 
-        throw new BadRequestException('Missing required path parameter: ids');
+        throw new BadRequestException(errorMessages.MISSING_IDS_PARAM);
       
       this.logger.log(`Deleting stock prices with IDs ${ids}`);
       return await this.stockPriceRepository.deleteMany(ids);
@@ -254,7 +274,10 @@ export class StockPriceService {
         `Error deleting stock prices with IDs ${ids}`,
         error.stack,
       );
-      throw new InternalServerErrorException('Error deleting stock prices');
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(errorMessages.FAILED_TO_DELETE_MANY_STOCK_PRICES);
     }
   }
 }
