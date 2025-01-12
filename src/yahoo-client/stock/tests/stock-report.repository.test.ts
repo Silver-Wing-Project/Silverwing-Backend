@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StockReportRepository } from '../stock-report/repositories/stock-report.repository';
 import { StockReport } from '../stock-report/entities/stock-report.schema';
+import { parseDate } from '../../utility/date-parser/date-parser.utils';
 
 describe('StockReportRepository', () => {
   let stockReportRepository: StockReportRepository;
@@ -8,7 +9,7 @@ describe('StockReportRepository', () => {
   const mockStockReport: StockReport = {
     _id: '507f1f77bcf86cd799439011',
     ticker: 'AAPL',
-    date: new Date('2021-01-01'),
+    date: parseDate('2021-01-01'),
     reportType: 'Annual',
     content: {summary: 'Annual report content'},
   };

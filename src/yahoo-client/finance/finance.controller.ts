@@ -3,6 +3,7 @@ import {
   Get,
   InternalServerErrorException,
   Query,
+  Param,
   UseFilters,
 } from '@nestjs/common';
 
@@ -10,6 +11,7 @@ import {
   ApiTags,
   ApiOperation,
   ApiBody,
+  ApiQuery,
   ApiParam,
   ApiResponse,
 } from '@nestjs/swagger';
@@ -36,9 +38,9 @@ export class FinanceController {
 
   @Get('fetch-stock-prices/')
   @ApiOperation({ summary: 'Fetch stock prices for a given ticker and date range'})
-  @ApiParam({ name: 'ticker', type: String, description: 'Stock Ticker' })
-  @ApiParam({ name: 'startDate', type: String, description: 'Start Date' })
-  @ApiParam({ name: 'endDate', type: String, description: 'End Date' })
+  @ApiQuery({ name: 'ticker', type: String, description: 'Stock Ticker', example: 'AAPL', required: true })
+  @ApiQuery({ name: 'startDate', type: String, description: 'Start Date', example: '2024-01-01', required: true })
+  @ApiQuery({ name: 'endDate', type: String, description: 'End Date', example: '2024-01-31', required: true })
   @ApiResponse({ status: 200, description: 'The stock prices have been successfully fetched.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 404, description: 'Stock prices not found.' })
@@ -72,23 +74,10 @@ export class FinanceController {
     return stockPrices;
   }
 
-  @Get('price/')
-  @ApiOperation({ summary: 'Get a stock price by ID' })
-  @ApiParam({ name: '_id', type: String, description: 'Stock Price ID' })
-  @ApiBody({ type: StockPrice })
-  @ApiResponse({ status: 200, description: 'The stock price has been successfully fetched.' })
-  @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiResponse({ status: 404, description: 'Stock price not found.' })
-  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async findStockPriceById(@Query('_id') _id: string): Promise<StockPrice> {
-    return await this.stockPriceService.findStockPriceById(_id);
-  }
-
-
   @Get('fetch-stock-reports/')
   @ApiOperation({ summary: 'Fetch stock reports for a given ticker and report type' })
-  @ApiParam({ name: 'ticker', type: String, description: 'Stock Ticker' })
-  @ApiParam({ name: 'reportType', type: String, description: 'Report Type' })
+  @ApiQuery({ name: 'ticker', type: String, description: 'Stock Ticker', example: 'AAPL', required: true })
+  @ApiQuery({ name: 'reportType', type: String, description: 'Report Type', example: 'financials', required: true })
   @ApiResponse({ status: 200, description: 'The stock reports have been successfully fetched.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -114,16 +103,4 @@ export class FinanceController {
     return stockReports;
   }
  
-
-  @Get('report/:_id')
-  @ApiOperation({ summary: 'Get a stock report by ID' })
-  @ApiParam({ name: '_id', type: String, description: 'Stock Report ID' })
-  @ApiBody({ type: StockReport })
-  @ApiResponse({ status: 200, description: 'The stock report has been successfully fetched.' })
-  @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiResponse({ status: 404, description: 'Stock report not found.' })
-  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async findStockReportById(@Query('_id') _id: string): Promise<StockReport> {
-    return await this.stockReportService.findStockReportById(_id);
-  }
 }
