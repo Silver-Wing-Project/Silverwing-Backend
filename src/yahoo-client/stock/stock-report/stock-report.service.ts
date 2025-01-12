@@ -11,12 +11,19 @@ import { UpdateStockReportDto } from './dto/update-stock-report.dto';
 import { StockReport } from './entities/stock-report.schema';
 import { plainToClass } from 'class-transformer';
 import { parseDate } from '../../utility/date-parser/date-parser.utils';
+import { errorMessages } from '../../utility/constants/constants';
+import { ServiceErrorHandler } from '../utils/service-error.handler';
 
 @Injectable()
 export class StockReportService {
   private readonly logger = new Logger(StockReportService.name);
+  private readonly serviceErrorHandler: ServiceErrorHandler;
 
-  constructor(private readonly stockReportRepository: StockReportRepository) {}
+  constructor(
+    private readonly stockReportRepository: StockReportRepository
+  ) {
+    this.serviceErrorHandler = new ServiceErrorHandler(this.logger);
+  }
 
   /**
    * Creates a new stock report.
@@ -32,9 +39,11 @@ export class StockReportService {
   ): Promise<StockReport> {
     try {
       if (!createStockReportDto) 
-        throw new BadRequestException(
-          'Missing required body parameter: createStockReportDto',
-        );
+        return this.serviceErrorHandler.handleBusinessError(
+      new BadRequestException(errorMessages.MISSING_CREATE_STOCK_REPORT_DTO),
+      'createStockReport',
+      errorMessages.FAILED_TO_CREATE_STOCK_REPORT
+    );
         
       const stockReport = plainToClass(StockReport, createStockReportDto);
       this.logger.log(
@@ -43,8 +52,11 @@ export class StockReportService {
       );
       return await this.stockReportRepository.create(stockReport);
     } catch (error) {
-      this.logger.error('Error creating stock report', error.stack);
-      throw new InternalServerErrorException('Error creating stock report');
+      return this.serviceErrorHandler.handleBusinessError(
+        error,
+        'createStockReport',
+        errorMessages.FAILED_TO_CREATE_STOCK_REPORT
+      );
     }
   }
 
@@ -53,6 +65,7 @@ export class StockReportService {
    *
    * @param {CreateStockReportDto[]} createStockReportDtos - An array of DTOs for creating stock reports.
    * @returns {Promise<StockReport[]>} A promise that resolves to an array of created stock reports.
+   * 
    * @throws {InternalServerErrorException} If there is an error during the creation of stock reports.
    */
   async createManyStockReports(
@@ -63,18 +76,17 @@ export class StockReportService {
         createStockReportDtos = [createStockReportDtos];
       }
 
-      const stockReports = createStockReportDtos.map((dto) =>
-        plainToClass(StockReport, dto),
-      );
-      // this.logger.log(
-      //   'Creating multiple stock reports',
-      //   JSON.stringify(stockReports),
-      // );
+      const stockReports = createStockReportDtos.map((dto) => {
+        const stockReport = plainToClass(StockReport, dto);
+        stockReport.date = parseDate(stockReport.date);
+        return stockReport;
+      });
       return await this.stockReportRepository.createMany(stockReports);
     } catch (error) {
-      this.logger.error('Error creating multiple stock reports', error.stack);
-      throw new InternalServerErrorException(
-        'Error creating multiple stock reports',
+      return this.serviceErrorHandler.handleBusinessError(
+        error,
+        'createManyStockReports',
+        errorMessages.FAILED_TO_CREATE_MANY_STOCK_REPORTS
       );
     }
   }
@@ -94,8 +106,11 @@ export class StockReportService {
       
       return stockReports;
     } catch (error) {
-      this.logger.error('Error finding all stock reports', error.stack);
-      throw new InternalServerErrorException('Error finding all stock reports');
+      return this.serviceErrorHandler.handleBusinessError(
+        error,
+        'findAllStockReports',
+        errorMessages.FAILED_TO_GET_ALL_STOCK_REPORTS
+      );
     }
   }
 
@@ -115,28 +130,29 @@ export class StockReportService {
   ): Promise<StockReport[]> {
     try {
       if (!ticker || !reportType) {
-        throw new BadRequestException(
-          'Missing required query parameters: ticker, reportType',
-        );
+        throw new BadRequestException(errorMessages.MISSING_QUERY_PARAMS_REPORT);
       }
+
       this.logger.log(
         `Finding multiple stock reports with ticker: ${ticker}, reportType: ${reportType}`,
       );
+
       const existingReports = await this.stockReportRepository.findMany({
         ticker,
         reportType,
       });
+
       if (!existingReports) {
-        throw new NotFoundException(
-          `Stock reports with ticker: ${ticker}, reportType: ${reportType} not found`,
-        );
+        throw new NotFoundException(errorMessages.FAILED_TO_GET_MANY_STOCK_REPORTS);
       }
+
       existingReports.forEach((report) => (report.date = parseDate(report.date)));
       return existingReports;
     } catch (error) {
-      this.logger.error('Error finding multiple stock reports', error.stack);
-      throw new InternalServerErrorException(
-        'Error finding multiple stock reports',
+      return this.serviceErrorHandler.handleBusinessError(
+        error,
+        'findManyStockReports',
+        errorMessages.FAILED_TO_GET_MANY_STOCK_REPORTS
       );
     }
   }
@@ -153,20 +169,25 @@ export class StockReportService {
   async findStockReportById(_id: string): Promise<StockReport> {
     try {
       if (!_id) 
-        throw new BadRequestException('Missing required query parameter: _id');
+        throw new BadRequestException(errorMessages.MISSING_ID_PARAM);
       
       this.logger.log(`Fetching stock report with ID ${_id}`);
       const stockReport = await this.stockReportRepository.findOne(_id);
       if (!stockReport) {
-        throw new NotFoundException(`Stock report with ID: ${_id} not found`);
+        throw new NotFoundException(errorMessages.FAILED_TO_GET_STOCK_REPORT_BY_ID);
       }
       stockReport.date = parseDate(stockReport.date);
       return stockReport;
     } catch (error) {
       this.logger.error(`Error finding stock report by ID ${_id}`, error.stack);
-      throw new InternalServerErrorException(
-        'Error finding stock report by ID',
-      );
+      switch (true) {
+        case error instanceof BadRequestException:
+          throw error;
+        case error instanceof NotFoundException:
+          throw error;
+        default:
+          throw new InternalServerErrorException(errorMessages.FAILED_TO_GET_STOCK_REPORT_BY_ID);
+      }
     }
   }
 
@@ -186,11 +207,12 @@ export class StockReportService {
     try {
       if (!_id || !updateStockReportDto) {
         throw new BadRequestException(
-          'Missing required path parameter: _id or body parameter: updateStockReportDto',
+          errorMessages.MISSING_UPDATE_STOCK_REPORT_DTO,
         );
       }
 
       const stockReport = plainToClass(StockReport, updateStockReportDto);
+      stockReport.date = parseDate(stockReport.date);
       this.logger.log(
         `Updating stock report with ID ${_id}`,
         JSON.stringify(stockReport),
@@ -201,7 +223,10 @@ export class StockReportService {
         `Error updating stock report with ID ${_id}`,
         error.stack,
       );
-      throw new InternalServerErrorException('Error updating stock report');
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(errorMessages.FAILED_TO_UPDATE_STOCK_REPORT);
     }
   }
 
@@ -216,7 +241,7 @@ export class StockReportService {
   async deleteStockReport(_id: string): Promise<any> {
     try {
       if (!_id) 
-        throw new BadRequestException('Missing required path parameter: _id');
+        throw new BadRequestException(errorMessages.MISSING_ID_PARAM);
 
       this.logger.log(`Deleting stock report with ID ${_id}`);
       return await this.stockReportRepository.delete(_id);
@@ -225,7 +250,10 @@ export class StockReportService {
         `Error deleting stock report with ID ${_id}`,
         error.stack,
       );
-      throw new InternalServerErrorException('Error deleting stock report');
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(errorMessages.FAILED_TO_DELETE_STOCK_REPORT);
     }
   }
 
@@ -249,9 +277,10 @@ export class StockReportService {
         `Error deleting multiple stock reports with IDs ${ids}`,
         error.stack,
       );
-      throw new InternalServerErrorException(
-        'Error deleting multiple stock reports',
-      );
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(errorMessages.FAILED_TO_DELETE_MANY_STOCK_REPORTS);
     }
   }
 }
