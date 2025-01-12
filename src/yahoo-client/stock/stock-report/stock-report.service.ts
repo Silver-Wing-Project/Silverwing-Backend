@@ -10,7 +10,6 @@ import { CreateStockReportDto } from './dto/create-stock-report.dto';
 import { UpdateStockReportDto } from './dto/update-stock-report.dto';
 import { StockReport } from './entities/stock-report.schema';
 import { plainToClass } from 'class-transformer';
-import { parseDate } from '../../utility/date-parser/date-parser.utils';
 import { errorMessages } from '../../utility/constants/constants';
 import { ServiceErrorHandler } from '../utils/service-error.handler';
 
@@ -78,7 +77,6 @@ export class StockReportService {
 
       const stockReports = createStockReportDtos.map((dto) => {
         const stockReport = plainToClass(StockReport, dto);
-        stockReport.date = parseDate(stockReport.date);
         return stockReport;
       });
       return await this.stockReportRepository.createMany(stockReports);
@@ -102,7 +100,6 @@ export class StockReportService {
       this.logger.log('Retrieving all stock reports');
 
       const stockReports = await this.stockReportRepository.findAll();
-      stockReports.forEach((report) => (report.date = parseDate(report.date)));
       
       return stockReports;
     } catch (error) {
@@ -146,7 +143,6 @@ export class StockReportService {
         throw new NotFoundException(errorMessages.FAILED_TO_GET_MANY_STOCK_REPORTS);
       }
 
-      existingReports.forEach((report) => (report.date = parseDate(report.date)));
       return existingReports;
     } catch (error) {
       return this.serviceErrorHandler.handleBusinessError(
@@ -176,7 +172,6 @@ export class StockReportService {
       if (!stockReport) {
         throw new NotFoundException(errorMessages.FAILED_TO_GET_STOCK_REPORT_BY_ID);
       }
-      stockReport.date = parseDate(stockReport.date);
       return stockReport;
     } catch (error) {
       this.logger.error(`Error finding stock report by ID ${_id}`, error.stack);
@@ -212,7 +207,6 @@ export class StockReportService {
       }
 
       const stockReport = plainToClass(StockReport, updateStockReportDto);
-      stockReport.date = parseDate(stockReport.date);
       this.logger.log(
         `Updating stock report with ID ${_id}`,
         JSON.stringify(stockReport),
