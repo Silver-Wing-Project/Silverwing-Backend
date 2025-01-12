@@ -22,9 +22,10 @@
     "test:all": "npm run test && pytest",
     "test:stock-price-repository": "jest src/yahoo-client/stock/tests/stock-price.repository.test.ts",
     "test:stock-report-repository": "jest src/yahoo-client/stock/tests/stock-report.repository.test.ts",
-    "test:stock-price-service": "jest src/yahoo-client/stock/stock-price/stock-price.service.spec.ts",
+    "test:stock-price-service": "jest src/yahoo-client/stock/stock-price/__tests__/stock-price.service.spec.ts",
     "test:stock-report-service": "jest src/yahoo-client/stock/stock-report/stock-report.service.spec.ts",
     "test:stock-repositories": "npm run test:stock-price-repository && npm run test:stock-report-repository",
+    "test:stock-services": "npm run test:stock-price-service && npm run test:stock-report-service",
     "test:python-data-manager": "pytest src/yahoo-client/utility/python/tests/test_data_manager.py"
   },
   "dependencies": {
