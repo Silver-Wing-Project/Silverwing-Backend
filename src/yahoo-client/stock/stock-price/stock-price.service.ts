@@ -12,7 +12,7 @@ import { StockPrice } from './entities/stock-price.schema';
 import { plainToClass } from 'class-transformer';
 import { parseDate } from '../../utility/date-parser/date-parser.utils';
 import { errorMessages } from '../../utility/constants/constants';
-import { ServiceErrorHandler } from './utils/service-error.handler';
+import { ServiceErrorHandler } from '../utils/service-error.handler';
 
 @Injectable()
 export class StockPriceService {
@@ -47,14 +47,17 @@ export class StockPriceService {
 
       const stockPrice = plainToClass(StockPrice, createStockPriceDto);
       stockPrice.date = parseDate(stockPrice.date);
-      this.logger.log('Creating a new stock price', JSON.stringify(stockPrice));
+      this.logger.log(
+        'Creating a new stock price', 
+        JSON.stringify(stockPrice)
+      );
       return await this.stockPriceRepository.create(stockPrice);
     } catch (error) {
       return this.serviceErrorHandler.handleBusinessError(
         error,
         'createStockPrice',
         errorMessages.FAILED_TO_CREATE_STOCK_PRICE,
-      )
+      );
     }
   }
 
