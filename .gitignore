@@ -53,3 +53,6 @@ __pycache__
 .github/CODEOWNERS
 .github/pull_request_template.md
 .github/PR_DESCRIPTION.md
+
+# Shell scripts
+*.sh
