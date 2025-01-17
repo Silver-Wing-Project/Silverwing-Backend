@@ -11,7 +11,7 @@ export class PythonService {
 
   async fetchStockData(ticker: string, startDate: string, endDate: string) {
     
-    const stockPricesData = await this.pythonExecutorService.runPythonScript(
+    const stockPricesData = await this.pythonExecutorService.executePythonScript(
       this.scriptPath,
       ['fetch_stock_prices', ticker, startDate, endDate],
     );
@@ -19,7 +19,7 @@ export class PythonService {
   }
 
   async fetchStockReports(ticker: string, reportType: string) {
-    const stockReportsData = await this.pythonExecutorService.runPythonScript(
+    const stockReportsData = await this.pythonExecutorService.executePythonScript(
       this.scriptPath,
       ['fetch_financial_reports', ticker, reportType],
     );
