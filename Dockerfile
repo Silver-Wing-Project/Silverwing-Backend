@@ -33,7 +33,7 @@ RUN npm ci
 ENV PATH="/venv/bin:$PATH"
 ENV PYTHONPATH="/usr/src/app/src/yahoo-client/utility/python"
 ENV PYTHONUNBUFFERED=1
-ENV NODE_ENV=development
+ENV NODE_ENV=docker
 
 # Copy the rest of the application
 COPY . .
