@@ -16,7 +16,6 @@ describe('StockReportService Tests', () => {
 
   const mockStockReports: StockReport[] = generateMockStockReports(5);
 
-  
   beforeEach(async () => {
     repository = createMockRepository();
     const module: TestingModule = await Test.createTestingModule({
@@ -27,6 +26,10 @@ describe('StockReportService Tests', () => {
     }).compile();
 
     service = module.get<StockReportService>(StockReportService);
+
+    // Mock logger methods to suppress logs during tests
+    // jest.spyOn(service['logger'], 'error').mockImplementation(() => {});
+    // jest.spyOn(service['logger'], 'log').mockImplementation(() => {});
   });
 
   afterAll(() => {
