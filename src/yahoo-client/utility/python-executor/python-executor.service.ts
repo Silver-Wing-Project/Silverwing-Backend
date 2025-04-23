@@ -1,23 +1,30 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { exec } from 'child_process';
-import * as path from 'path';
 
 export class PythonExecutionError extends Error {
-  constructor(message: string, public stderr: string) {
+  constructor(
+    message: string,
+    public stderr: string,
+  ) {
     super(message);
     this.name = 'PythonExecutionError';
   }
 }
-
 @Injectable()
 export class PythonExecutorService {
   private readonly logger = new Logger(PythonExecutorService.name);
 
-  async executePythonScript(scriptPath: string, args: string[] = []): Promise<string> {
+  async executePythonScript(
+    scriptPath: string,
+    args: string[] = [],
+  ): Promise<string> {
     const command = `python ${scriptPath} ${args.join(' ')}`;
     const options = {
       cwd: process.cwd(),
-      env: { ...process.env }
+      env: {
+        ...process.env,
+        PYTHONPATH: `${process.cwd()}/src/yahoo-client/utility/python`,
+      },
     };
 
     return new Promise((resolve, reject) => {
@@ -25,7 +32,9 @@ export class PythonExecutorService {
         // Handle non-error warnings (like FutureWarning)
         if (stderr && !stderr.includes('FutureWarning')) {
           this.logger.error(`Python script stderr: ${stderr}`);
-          reject(new PythonExecutionError('Python script execution failed', stderr));
+          reject(
+            new PythonExecutionError('Python script execution failed', stderr),
+          );
           return;
         }
 
