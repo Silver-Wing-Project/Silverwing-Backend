@@ -14,12 +14,13 @@ import { StockModule } from './yahoo-client/stock/stock.module';
         `.env.${process.env.NODE_ENV || 'development'}`, // Use environment-specific file
         '.env', // Fallback to default .env file
       ],
-    }),
+    }), 
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
+        const nodeEnv = configService.get<string>('NODE_ENV');
         const mongodbUri =
-          configService.get<string>('NODE_ENV') === 'development'
+          nodeEnv === 'development'
             ? configService.get<string>('MONGODB_LOCALHOST_URI')
             : configService.get<string>('MONGODB_URI');
 
