@@ -36,11 +36,12 @@ class DataFetcher:
                 'close': row['Close'],
                 'volume': row['Volume']
             } for index, row in df.iterrows()]
-            # convert the dictionary to a json string
+            
+            # Convert the dictionary to a JSON string
             prices_data_json = json.dumps(price_data, cls=DateTimeEncoder)
             return prices_data_json
         except Exception as e:
-            error_message = json.dumps({'error': str(e)})
+            error_message = json.dumps({'error': f"Unexpected error: {str(e)}"})
             print(error_message)
             return error_message
 

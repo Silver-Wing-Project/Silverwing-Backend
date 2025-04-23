@@ -1,4 +1,4 @@
-from interfaces.data_fetcher import DataFetcher
+from .data_fetcher import DataFetcher
 from datetime import datetime
 from typing import Dict
 import json
