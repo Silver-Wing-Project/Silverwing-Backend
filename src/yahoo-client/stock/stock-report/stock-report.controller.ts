@@ -59,8 +59,8 @@ export class StockReportController {
 
   @Get('reports/:ticker/:reportType')
   @ApiOperation({ summary: 'Get multiple stock reports by ticker and report type' })
-  @ApiQuery({ name: 'ticker', type: String, description: 'Stock Ticker', required: true })
-  @ApiQuery({ name: 'reportType', type: String, description: 'Report Type', required: true })
+  @ApiParam({ name: 'ticker', type: String, description: 'Stock Ticker', required: true })
+  @ApiParam({ name: 'reportType', type: String, description: 'Report Type', required: true })
   @ApiResponse({ status: 200, description: 'The stock reports have been successfully fetched.'})
   @ApiResponse({ status: 404, description: 'Stock reports not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -76,7 +76,7 @@ export class StockReportController {
 
   @Get('report/:_id')
   @ApiOperation({ summary: 'Get a stock report by ID' })
-  @ApiQuery({ name: '_id', type: String, description: 'Stock Report ID', required: true })
+  @ApiParam({ name: '_id', type: String, description: 'Stock Report ID', required: true })
   @ApiResponse({ status: 200, description: 'The stock report has been successfully fetched.' })
   @ApiResponse({ status: 404, description: 'Stock report not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -87,7 +87,7 @@ export class StockReportController {
   @Patch('report/:_id')
   @ApiOperation({ summary: 'Update a stock report by ID' })
   @ApiBody({ type: UpdateStockReportDto })
-  @ApiQuery({ name: '_id', type: String, description: 'Stock Report ID', required: true })
+  @ApiParam({ name: '_id', type: String, description: 'Stock Report ID', required: true })
   @ApiResponse({ status: 200, description: 'The stock report has been successfully updated.' })
   @ApiResponse({ status: 404, description: 'Stock report not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -103,7 +103,7 @@ export class StockReportController {
 
   @Delete('report/:_id')
   @ApiOperation({ summary: 'Delete a stock report by ID' })
-  @ApiQuery({ name: '_id', type: String, description: 'Stock Report ID', required: true })
+  @ApiParam({ name: '_id', type: String, description: 'Stock Report ID', required: true })
   @ApiResponse({ status: 200, description: 'The stock report has been successfully deleted.' })
   @ApiResponse({ status: 404, description: 'Stock report not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -113,7 +113,7 @@ export class StockReportController {
 
   @Delete('reports/:ids')
   @ApiOperation({ summary: 'Delete multiple stock reports by ID' })
-  @ApiQuery({ name: 'ids', type: String, description: 'Stock Report IDs', required: true })
+  @ApiParam({ name: 'ids', type: String, description: 'Stock Report IDs', required: true })
   @ApiResponse({ status: 200, description: 'The stock reports have been successfully deleted.' })
   @ApiResponse({ status: 404, description: 'Stock reports not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })

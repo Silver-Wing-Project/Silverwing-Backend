@@ -56,9 +56,9 @@ export class StockPriceController {
 
   @Get('prices/:ticker/:startDate/:endDate')
   @ApiOperation({ summary: 'Get multiple stock prices by ticker, start date, and end date' })
-  @ApiQuery({ name: 'ticker', type: String, description: 'Stock Ticker', example: 'AAPL', required: true })
-  @ApiQuery({ name: 'startDate', type: String, description: 'Start Date', example: '2024-01-01', required: true })
-  @ApiQuery({ name: 'endDate', type: String, description: 'End Date', example: '2024-01-31', required: true })
+  @ApiParam({ name: 'ticker', type: String, description: 'Stock Ticker', example: 'AAPL', required: true })
+  @ApiParam({ name: 'startDate', type: String, description: 'Start Date', example: '2024-01-01', required: true })
+  @ApiParam({ name: 'endDate', type: String, description: 'End Date', example: '2024-01-31', required: true })
   @ApiResponse({ status: 200, description: 'The stock prices have been successfully fetched.'})
   @ApiResponse({ status: 404, description: 'Stock prices not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -76,7 +76,7 @@ export class StockPriceController {
 
   @Get('price/:_id')
   @ApiOperation({ summary: 'Get a stock price by ID' })
-  @ApiQuery({ name: '_id', type: String, description: 'Stock Price ID', required: true })
+  @ApiParam({ name: '_id', type: String, description: 'Stock Price ID', required: true })
   @ApiResponse({ status: 200, description: 'The stock price has been successfully fetched.' })
   @ApiResponse({ status: 404, description: 'Stock price not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -87,7 +87,7 @@ export class StockPriceController {
   @Patch('price/:_id')
   @ApiOperation({ summary: 'Update a stock price by ID' })
   @ApiBody({ type: UpdateStockPriceDto })
-  @ApiQuery({ name: '_id', type: String, description: 'Stock Price ID', required: true })
+  @ApiParam({ name: '_id', type: String, description: 'Stock Price ID', required: true })
   @ApiResponse({ status: 200, description: 'The stock price has been successfully updated.' })
   @ApiResponse({ status: 404, description: 'Stock price not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -100,7 +100,7 @@ export class StockPriceController {
 
   @Delete('price/:_id')
   @ApiOperation({ summary: 'Delete a stock price by ID' })
-  @ApiQuery({ name: '_id', type: String, description: 'Stock Price ID', required: true })
+  @ApiParam({ name: '_id', type: String, description: 'Stock Price ID', required: true })
   @ApiResponse({ status: 200, description: 'The stock price has been successfully deleted.' })
   @ApiResponse({ status: 404, description: 'Stock price not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
@@ -110,7 +110,7 @@ export class StockPriceController {
 
   @Delete('prices/:ids')
   @ApiOperation({ summary: 'Delete multiple stock prices by ID' })
-  @ApiQuery({ name: 'ids', type: String, description: 'Stock Price IDs', required: true })
+  @ApiParam({ name: 'ids', type: String, description: 'Stock Price IDs', required: true })
   @ApiResponse({ status: 200, description: 'The stock prices have been successfully deleted.',})
   @ApiResponse({ status: 404, description: 'Stock prices not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
