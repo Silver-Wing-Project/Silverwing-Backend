@@ -11,7 +11,7 @@ describe('StockReportRepository', () => {
     ticker: 'AAPL',
     date: parseDate('2021-01-01'),
     reportType: 'Annual',
-    content: {summary: 'Annual report content'},
+    content: { summary: 'Annual report content' },
   };
 
   const mockStockReports: StockReport[] = [

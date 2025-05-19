@@ -11,7 +11,7 @@ import { parseDate } from '../../../utility/date-parser/date-parser.utils';
 export class StockPriceRepository {
   /**
    * Creates an instance of StockPriceRepository.
-   * 
+   *
    * @param stockPriceModel - The injected Mongoose model for StockPrice documents.
    */
   constructor(
@@ -82,7 +82,9 @@ export class StockPriceRepository {
    */
   async update(id: string, stockPrice: StockPrice): Promise<StockPrice> {
     stockPrice.date = parseDate(stockPrice.date);
-    return this.stockPriceModel.findByIdAndUpdate(id, stockPrice, { new: true }).exec();
+    return this.stockPriceModel
+      .findByIdAndUpdate(id, stockPrice, { new: true })
+      .exec();
   }
 
   /**
