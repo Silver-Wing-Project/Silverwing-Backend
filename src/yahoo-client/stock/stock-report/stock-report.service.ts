@@ -18,43 +18,36 @@ export class StockReportService {
   private readonly logger = new Logger(StockReportService.name);
   private readonly serviceErrorHandler: ServiceErrorHandler;
 
-  constructor(
-    private readonly stockReportRepository: StockReportRepository
-  ) {
+  constructor(private readonly stockReportRepository: StockReportRepository) {
     this.serviceErrorHandler = new ServiceErrorHandler(this.logger);
   }
 
   /**
    * Creates a new stock report.
-   * 
+   *
    * @param {CreateStockReportDto} createStockReportDto - The data transfer object containing the details of the stock report to be created.
    * @returns {Promise<StockReport>} A promise that resolves to the created stock report.
-   * 
+   *
    * @throws {BadRequestException} If the createStockReportDto is not provided.
    * @throws {InternalServerErrorException} If there is an error creating the stock report.
    */
-  async createStockReport(
-    createStockReportDto: CreateStockReportDto,
-  ): Promise<StockReport> {
+  async createStockReport(createStockReportDto: CreateStockReportDto): Promise<StockReport> {
     try {
-      if (!createStockReportDto) 
+      if (!createStockReportDto)
         return this.serviceErrorHandler.handleBusinessError(
-      new BadRequestException(errorMessages.MISSING_CREATE_STOCK_REPORT_DTO),
-      'createStockReport',
-      errorMessages.FAILED_TO_CREATE_STOCK_REPORT
-    );
-        
+          new BadRequestException(errorMessages.MISSING_CREATE_STOCK_REPORT_DTO),
+          'createStockReport',
+          errorMessages.FAILED_TO_CREATE_STOCK_REPORT,
+        );
+
       const stockReport = plainToClass(StockReport, createStockReportDto);
-      this.logger.log(
-        'Creating a new stock report',
-        JSON.stringify(stockReport),
-      );
+      this.logger.log('Creating a new stock report', JSON.stringify(stockReport));
       return await this.stockReportRepository.create(stockReport);
     } catch (error) {
       return this.serviceErrorHandler.handleBusinessError(
         error,
         'createStockReport',
-        errorMessages.FAILED_TO_CREATE_STOCK_REPORT
+        errorMessages.FAILED_TO_CREATE_STOCK_REPORT,
       );
     }
   }
@@ -64,12 +57,10 @@ export class StockReportService {
    *
    * @param {CreateStockReportDto[]} createStockReportDtos - An array of DTOs for creating stock reports.
    * @returns {Promise<StockReport[]>} A promise that resolves to an array of created stock reports.
-   * 
+   *
    * @throws {InternalServerErrorException} If there is an error during the creation of stock reports.
    */
-  async createManyStockReports(
-    createStockReportDtos: CreateStockReportDto[],
-  ): Promise<StockReport[]> {
+  async createManyStockReports(createStockReportDtos: CreateStockReportDto[]): Promise<StockReport[]> {
     try {
       if (!Array.isArray(createStockReportDtos)) {
         createStockReportDtos = [createStockReportDtos];
@@ -84,7 +75,7 @@ export class StockReportService {
       return this.serviceErrorHandler.handleBusinessError(
         error,
         'createManyStockReports',
-        errorMessages.FAILED_TO_CREATE_MANY_STOCK_REPORTS
+        errorMessages.FAILED_TO_CREATE_MANY_STOCK_REPORTS,
       );
     }
   }
@@ -100,13 +91,13 @@ export class StockReportService {
       this.logger.log('Retrieving all stock reports');
 
       const stockReports = await this.stockReportRepository.findAll();
-      
+
       return stockReports;
     } catch (error) {
       return this.serviceErrorHandler.handleBusinessError(
         error,
         'findAllStockReports',
-        errorMessages.FAILED_TO_GET_ALL_STOCK_REPORTS
+        errorMessages.FAILED_TO_GET_ALL_STOCK_REPORTS,
       );
     }
   }
@@ -121,18 +112,13 @@ export class StockReportService {
    * @throws {NotFoundException} If no stock reports are found for the given ticker and reportType.
    * @throws {InternalServerErrorException} If an error occurs while finding the stock reports.
    */
-  async findManyStockReports(
-    ticker: string,
-    reportType: string,
-  ): Promise<StockReport[]> {
+  async findManyStockReports(ticker: string, reportType: string): Promise<StockReport[]> {
     try {
       if (!ticker || !reportType) {
         throw new BadRequestException(errorMessages.MISSING_QUERY_PARAMS_REPORT);
       }
 
-      this.logger.log(
-        `Finding multiple stock reports with ticker: ${ticker}, reportType: ${reportType}`,
-      );
+      this.logger.log(`Finding multiple stock reports with ticker: ${ticker}, reportType: ${reportType}`);
 
       const existingReports = await this.stockReportRepository.findMany({
         ticker,
@@ -148,7 +134,7 @@ export class StockReportService {
       return this.serviceErrorHandler.handleBusinessError(
         error,
         'findManyStockReports',
-        errorMessages.FAILED_TO_GET_MANY_STOCK_REPORTS
+        errorMessages.FAILED_TO_GET_MANY_STOCK_REPORTS,
       );
     }
   }
@@ -164,9 +150,8 @@ export class StockReportService {
    */
   async findStockReportById(_id: string): Promise<StockReport> {
     try {
-      if (!_id) 
-        throw new BadRequestException(errorMessages.MISSING_ID_PARAM);
-      
+      if (!_id) throw new BadRequestException(errorMessages.MISSING_ID_PARAM);
+
       this.logger.log(`Fetching stock report with ID ${_id}`);
       const stockReport = await this.stockReportRepository.findOne(_id);
       if (!stockReport) {
@@ -195,28 +180,17 @@ export class StockReportService {
    * @throws {BadRequestException} If the _id or updateStockReportDto is missing.
    * @throws {InternalServerErrorException} If an error occurs while updating the stock report.
    */
-  async updateStockReport(
-    _id: string,
-    updateStockReportDto: UpdateStockReportDto,
-  ): Promise<StockReport> {
+  async updateStockReport(_id: string, updateStockReportDto: UpdateStockReportDto): Promise<StockReport> {
     try {
       if (!_id || !updateStockReportDto) {
-        throw new BadRequestException(
-          errorMessages.MISSING_UPDATE_STOCK_REPORT_DTO,
-        );
+        throw new BadRequestException(errorMessages.MISSING_UPDATE_STOCK_REPORT_DTO);
       }
 
       const stockReport = plainToClass(StockReport, updateStockReportDto);
-      this.logger.log(
-        `Updating stock report with ID ${_id}`,
-        JSON.stringify(stockReport),
-      );
+      this.logger.log(`Updating stock report with ID ${_id}`, JSON.stringify(stockReport));
       return await this.stockReportRepository.update(_id, stockReport);
     } catch (error) {
-      this.logger.error(
-        `Error updating stock report with ID ${_id}`,
-        error.stack,
-      );
+      this.logger.error(`Error updating stock report with ID ${_id}`, error.stack);
       if (error instanceof BadRequestException) {
         throw error;
       }
@@ -234,16 +208,12 @@ export class StockReportService {
    */
   async deleteStockReport(_id: string): Promise<any> {
     try {
-      if (!_id) 
-        throw new BadRequestException(errorMessages.MISSING_ID_PARAM);
+      if (!_id) throw new BadRequestException(errorMessages.MISSING_ID_PARAM);
 
       this.logger.log(`Deleting stock report with ID ${_id}`);
       return await this.stockReportRepository.delete(_id);
     } catch (error) {
-      this.logger.error(
-        `Error deleting stock report with ID ${_id}`,
-        error.stack,
-      );
+      this.logger.error(`Error deleting stock report with ID ${_id}`, error.stack);
       if (error instanceof BadRequestException) {
         throw error;
       }
@@ -261,16 +231,12 @@ export class StockReportService {
    */
   async deleteManyStockReports(ids: string[]): Promise<any> {
     try {
-      if (!ids || ids.length === 0)
-        throw new BadRequestException('Missing required path parameter: ids');
+      if (!ids || ids.length === 0) throw new BadRequestException('Missing required path parameter: ids');
 
       this.logger.log(`Deleting multiple stock reports with IDs ${ids}`);
       return await this.stockReportRepository.deleteMany(ids);
     } catch (error) {
-      this.logger.error(
-        `Error deleting multiple stock reports with IDs ${ids}`,
-        error.stack,
-      );
+      this.logger.error(`Error deleting multiple stock reports with IDs ${ids}`, error.stack);
       if (error instanceof BadRequestException) {
         throw error;
       }

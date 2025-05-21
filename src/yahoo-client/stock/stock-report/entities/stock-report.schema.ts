@@ -20,7 +20,7 @@ export class StockReport {
   @IsNotEmpty()
   @Prop({ required: true, index: true, type: Date })
   date: Date;
-  
+
   @IsString()
   @IsNotEmpty()
   @Prop({ required: true, type: String })
@@ -33,7 +33,4 @@ export class StockReport {
 }
 
 export const StockReportSchema = SchemaFactory.createForClass(StockReport);
-StockReportSchema.index(
-  { ticker: 1, date: 1, reportType: 1 },
-  { unique: true },
-);
+StockReportSchema.index({ ticker: 1, date: 1, reportType: 1 }, { unique: true });

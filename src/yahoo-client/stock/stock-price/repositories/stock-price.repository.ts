@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  StockPrice,
-  StockPriceDocument,
-} from '../../stock-price/entities/stock-price.schema';
+import { StockPrice, StockPriceDocument } from '../../stock-price/entities/stock-price.schema';
 import { parseDate } from '../../../utility/date-parser/date-parser.utils';
 
 @Injectable()
@@ -82,9 +79,7 @@ export class StockPriceRepository {
    */
   async update(id: string, stockPrice: StockPrice): Promise<StockPrice> {
     stockPrice.date = parseDate(stockPrice.date);
-    return this.stockPriceModel
-      .findByIdAndUpdate(id, stockPrice, { new: true })
-      .exec();
+    return this.stockPriceModel.findByIdAndUpdate(id, stockPrice, { new: true }).exec();
   }
 
   /**

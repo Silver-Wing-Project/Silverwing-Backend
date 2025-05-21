@@ -1,24 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Query,
-  Patch,
-  Delete,
-  UseFilters,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Patch, Delete, UseFilters } from '@nestjs/common';
 import { StockReportService } from './stock-report.service';
 import { CreateStockReportDto } from './dto/create-stock-report.dto';
 import { UpdateStockReportDto } from './dto/update-stock-report.dto';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBody,
-  ApiQuery,
-  ApiParam,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiQuery, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { AllExceptionsFilter } from '../../utility/filters/all-exceptions.filter';
 
 @ApiTags('stock-reports')
@@ -43,15 +27,13 @@ export class StockReportController {
   @ApiResponse({ status: 201, description: 'The stock reports have been successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async createManyStockReports(
-    @Body() createStockReportDtos: CreateStockReportDto[],
-  ) {
+  async createManyStockReports(@Body() createStockReportDtos: CreateStockReportDto[]) {
     return await this.stockReportService.createManyStockReports(createStockReportDtos);
   }
 
   @Get('reports')
   @ApiOperation({ summary: 'Get all stock reports' })
-  @ApiResponse({ status: 200, description: 'The stock reports have been successfully fetched.'})
+  @ApiResponse({ status: 200, description: 'The stock reports have been successfully fetched.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   async findAllStockReports() {
     return await this.stockReportService.findAllStockReports();
@@ -61,17 +43,11 @@ export class StockReportController {
   @ApiOperation({ summary: 'Get multiple stock reports by ticker and report type' })
   @ApiParam({ name: 'ticker', type: String, description: 'Stock Ticker', required: true })
   @ApiParam({ name: 'reportType', type: String, description: 'Report Type', required: true })
-  @ApiResponse({ status: 200, description: 'The stock reports have been successfully fetched.'})
+  @ApiResponse({ status: 200, description: 'The stock reports have been successfully fetched.' })
   @ApiResponse({ status: 404, description: 'Stock reports not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async findManyStockReports(
-    @Query('ticker') ticker: string,
-    @Query('reportType') reportType: string,
-  ) {
-    return await this.stockReportService.findManyStockReports(
-      ticker,
-      reportType,
-    );
+  async findManyStockReports(@Query('ticker') ticker: string, @Query('reportType') reportType: string) {
+    return await this.stockReportService.findManyStockReports(ticker, reportType);
   }
 
   @Get('report/:_id')
@@ -91,14 +67,8 @@ export class StockReportController {
   @ApiResponse({ status: 200, description: 'The stock report has been successfully updated.' })
   @ApiResponse({ status: 404, description: 'Stock report not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async updateStockReport(
-    @Query('_id') _id: string,
-    @Body() updateStockReportDto: UpdateStockReportDto,
-  ) {
-    return await this.stockReportService.updateStockReport(
-      _id,
-      updateStockReportDto,
-    );
+  async updateStockReport(@Query('_id') _id: string, @Body() updateStockReportDto: UpdateStockReportDto) {
+    return await this.stockReportService.updateStockReport(_id, updateStockReportDto);
   }
 
   @Delete('report/:_id')

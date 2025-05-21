@@ -4,16 +4,12 @@ export const testErrorHandling = async (
   operation: () => Promise<any>,
   ErrorType: Type<Error>,
   errorMessage: string,
-  mockFn?: jest.SpyInstance
+  mockFn?: jest.SpyInstance,
 ) => {
-  await expect(operation())
-    .rejects
-    .toThrow(ErrorType);
-  
-  await expect(operation())
-    .rejects
-    .toThrow(errorMessage);
-    
+  await expect(operation()).rejects.toThrow(ErrorType);
+
+  await expect(operation()).rejects.toThrow(errorMessage);
+
   if (mockFn) {
     expect(mockFn).not.toHaveBeenCalled();
   }

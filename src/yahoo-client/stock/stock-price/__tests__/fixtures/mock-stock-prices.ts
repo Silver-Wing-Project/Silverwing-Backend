@@ -15,14 +15,14 @@ export const baseMockStockPrice: CreateStockPriceDto = {
 };
 
 export const updateMockStockPrice: UpdateStockPriceDto = {
-    _id: baseMockStockPrice._id,
-    ticker: baseMockStockPrice.ticker,
-    date: baseMockStockPrice.date,
-    open: 200,
-    close: 210,
-    high: 220,
-    low: 190,
-    volume: 2000000,
+  _id: baseMockStockPrice._id,
+  ticker: baseMockStockPrice.ticker,
+  date: baseMockStockPrice.date,
+  open: 200,
+  close: 210,
+  high: 220,
+  low: 190,
+  volume: 2000000,
 };
 
 export const generateMockStockPrices = (count: number): StockPrice[] =>

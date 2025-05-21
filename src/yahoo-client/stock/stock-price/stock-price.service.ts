@@ -32,9 +32,7 @@ export class StockPriceService {
    * @throws {BadRequestException} - If the createStockPriceDto is not provided.
    * @throws {InternalServerErrorException} - If there is an error while creating the stock price.
    */
-  async createStockPrice(
-    createStockPriceDto: CreateStockPriceDto,
-  ): Promise<StockPrice> {
+  async createStockPrice(createStockPriceDto: CreateStockPriceDto): Promise<StockPrice> {
     try {
       if (!createStockPriceDto)
         return this.serviceErrorHandler.handleBusinessError(
@@ -63,9 +61,7 @@ export class StockPriceService {
    *
    * @throws {InternalServerErrorException} If there is an error during the creation of stock prices.
    */
-  async createManyStockPrices(
-    createStockPriceDtos: CreateStockPriceDto[],
-  ): Promise<StockPrice[]> {
+  async createManyStockPrices(createStockPriceDtos: CreateStockPriceDto[]): Promise<StockPrice[]> {
     try {
       const stockPrices = createStockPriceDtos.map((dto) => {
         const stockPrice = plainToClass(StockPrice, dto);
@@ -114,11 +110,7 @@ export class StockPriceService {
    * @throws {NotFoundException} - If no stock prices are found for the given ticker and date range.
    * @throws {InternalServerErrorException} - If an error occurs while finding the stock prices.
    */
-  async findManyStockPrices(
-    ticker: string,
-    startDate: string,
-    endDate: string,
-  ): Promise<StockPrice[]> {
+  async findManyStockPrices(ticker: string, startDate: string, endDate: string): Promise<StockPrice[]> {
     try {
       if (!ticker || !startDate || !endDate) {
         throw new BadRequestException(errorMessages.MISSING_QUERY_PARAMS_PRICE);
@@ -137,9 +129,7 @@ export class StockPriceService {
       });
 
       if (!existingPrices) {
-        throw new NotFoundException(
-          errorMessages.FAILED_TO_GET_MANY_STOCK_PRICES,
-        );
+        throw new NotFoundException(errorMessages.FAILED_TO_GET_MANY_STOCK_PRICES);
       }
       return existingPrices;
     } catch (error) {
@@ -167,9 +157,7 @@ export class StockPriceService {
       this.logger.log(`Finding stock price by ID: ${_id}`);
       const stockPrice = await this.stockPriceRepository.findOne(_id);
       if (!stockPrice) {
-        throw new NotFoundException(
-          errorMessages.FAILED_TO_GET_STOCK_PRICE_BY_ID,
-        );
+        throw new NotFoundException(errorMessages.FAILED_TO_GET_STOCK_PRICE_BY_ID);
       }
       return stockPrice;
     } catch (error) {
@@ -180,9 +168,7 @@ export class StockPriceService {
         case error instanceof NotFoundException:
           throw error;
         default:
-          throw new InternalServerErrorException(
-            errorMessages.FAILED_TO_GET_STOCK_PRICE_BY_ID,
-          );
+          throw new InternalServerErrorException(errorMessages.FAILED_TO_GET_STOCK_PRICE_BY_ID);
       }
     }
   }
@@ -196,33 +182,19 @@ export class StockPriceService {
    * @throws {BadRequestException} If the _id or updateStockPriceDto is missing.
    * @throws {InternalServerErrorException} If an error occurs while updating the stock price.
    */
-  async updateStockPrice(
-    _id: string,
-    updateStockPriceDto: UpdateStockPriceDto,
-  ): Promise<StockPrice> {
+  async updateStockPrice(_id: string, updateStockPriceDto: UpdateStockPriceDto): Promise<StockPrice> {
     try {
-      if (!_id || !updateStockPriceDto)
-        throw new BadRequestException(
-          errorMessages.MISSING_UPDATE_STOCK_PRICE_DTO,
-        );
+      if (!_id || !updateStockPriceDto) throw new BadRequestException(errorMessages.MISSING_UPDATE_STOCK_PRICE_DTO);
 
       const stockPrice = plainToClass(StockPrice, updateStockPriceDto);
-      this.logger.log(
-        `Updating stock price with ID ${_id}`,
-        JSON.stringify(stockPrice),
-      );
+      this.logger.log(`Updating stock price with ID ${_id}`, JSON.stringify(stockPrice));
       return await this.stockPriceRepository.update(_id, stockPrice);
     } catch (error) {
-      this.logger.error(
-        `Error updating stock price with ID ${_id}`,
-        error.stack,
-      );
+      this.logger.error(`Error updating stock price with ID ${_id}`, error.stack);
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new InternalServerErrorException(
-        errorMessages.FAILED_TO_UPDATE_STOCK_PRICE,
-      );
+      throw new InternalServerErrorException(errorMessages.FAILED_TO_UPDATE_STOCK_PRICE);
     }
   }
 
@@ -241,16 +213,11 @@ export class StockPriceService {
       this.logger.log(`Deleting stock price with ID ${_id}`);
       return await this.stockPriceRepository.delete(_id);
     } catch (error) {
-      this.logger.error(
-        `Error deleting stock price with ID ${_id}`,
-        error.stack,
-      );
+      this.logger.error(`Error deleting stock price with ID ${_id}`, error.stack);
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new InternalServerErrorException(
-        errorMessages.FAILED_TO_DELETE_STOCK_PRICE,
-      );
+      throw new InternalServerErrorException(errorMessages.FAILED_TO_DELETE_STOCK_PRICE);
     }
   }
 
@@ -264,22 +231,16 @@ export class StockPriceService {
    */
   async deleteManyStockPrices(ids: string[]): Promise<any> {
     try {
-      if (!ids || ids.length === 0)
-        throw new BadRequestException(errorMessages.MISSING_IDS_PARAM);
+      if (!ids || ids.length === 0) throw new BadRequestException(errorMessages.MISSING_IDS_PARAM);
 
       this.logger.log(`Deleting stock prices with IDs ${ids}`);
       return await this.stockPriceRepository.deleteMany(ids);
     } catch (error) {
-      this.logger.error(
-        `Error deleting stock prices with IDs ${ids}`,
-        error.stack,
-      );
+      this.logger.error(`Error deleting stock prices with IDs ${ids}`, error.stack);
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new InternalServerErrorException(
-        errorMessages.FAILED_TO_DELETE_MANY_STOCK_PRICES,
-      );
+      throw new InternalServerErrorException(errorMessages.FAILED_TO_DELETE_MANY_STOCK_PRICES);
     }
   }
 }
