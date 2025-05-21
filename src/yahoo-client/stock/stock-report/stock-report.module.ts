@@ -5,11 +5,7 @@ import { StockReportService } from './stock-report.service';
 import { StockReportRepository } from './repositories/stock-report.repository';
 import { StockReport, StockReportSchema } from './entities/stock-report.schema';
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: StockReport.name, schema: StockReportSchema },
-    ]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: StockReport.name, schema: StockReportSchema }])],
   controllers: [StockReportController],
   providers: [StockReportService, StockReportRepository],
   exports: [StockReportService, StockReportRepository],

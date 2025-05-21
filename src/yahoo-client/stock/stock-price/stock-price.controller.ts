@@ -1,22 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Query,
-  Patch,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Patch, Delete } from '@nestjs/common';
 import { StockPriceService } from './stock-price.service';
 import { CreateStockPriceDto } from './dto/create-stock-price.dto';
 import { UpdateStockPriceDto } from './dto/update-stock-price.dto';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBody,
-  ApiParam,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('stock-prices')
 @Controller('stock-prices')
@@ -53,12 +39,8 @@ export class StockPriceController {
   })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async createManyStockPrices(
-    @Body() createStockPriceDtos: CreateStockPriceDto[],
-  ) {
-    return await this.stockPriceService.createManyStockPrices(
-      createStockPriceDtos,
-    );
+  async createManyStockPrices(@Body() createStockPriceDtos: CreateStockPriceDto[]) {
+    return await this.stockPriceService.createManyStockPrices(createStockPriceDtos);
   }
 
   @Get('prices')
@@ -108,11 +90,7 @@ export class StockPriceController {
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
-    return await this.stockPriceService.findManyStockPrices(
-      ticker,
-      startDate,
-      endDate,
-    );
+    return await this.stockPriceService.findManyStockPrices(ticker, startDate, endDate);
   }
 
   @Get('price/:_id')
@@ -148,14 +126,8 @@ export class StockPriceController {
   })
   @ApiResponse({ status: 404, description: 'Stock price not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async updateStockPrice(
-    @Query('_id') _id: string,
-    @Body() updateStockPriceDto: UpdateStockPriceDto,
-  ) {
-    return await this.stockPriceService.updateStockPrice(
-      _id,
-      updateStockPriceDto,
-    );
+  async updateStockPrice(@Query('_id') _id: string, @Body() updateStockPriceDto: UpdateStockPriceDto) {
+    return await this.stockPriceService.updateStockPrice(_id, updateStockPriceDto);
   }
 
   @Delete('price/:_id')

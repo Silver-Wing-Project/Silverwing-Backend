@@ -3,9 +3,7 @@ import { CreateStockReportDto } from '../../stock/stock-report/dto/create-stock-
 import mongoose from 'mongoose';
 import { parseDate } from '../date-parser/date-parser.utils';
 
-export function parseStockPricesData(
-  stockPricesData: any[],
-): CreateStockPriceDto[] {
+export function parseStockPricesData(stockPricesData: any[]): CreateStockPriceDto[] {
   return stockPricesData.map((data: any) => ({
     _id: new mongoose.Types.ObjectId().toString(),
     ticker: data.ticker,
@@ -18,9 +16,7 @@ export function parseStockPricesData(
   }));
 }
 
-export function parseStockReportsData(
-  stockReportsData: any,
-): CreateStockReportDto[] {
+export function parseStockReportsData(stockReportsData: any): CreateStockReportDto[] {
   return [
     {
       _id: new mongoose.Types.ObjectId().toString(),

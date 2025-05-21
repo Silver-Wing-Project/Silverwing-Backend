@@ -19,10 +19,7 @@ describe('StockPriceService Tests', () => {
   beforeEach(async () => {
     repository = createMockRepository();
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        StockPriceService,
-        { provide: StockPriceRepository, useValue: repository }
-      ],
+      providers: [StockPriceService, { provide: StockPriceRepository, useValue: repository }],
     }).compile();
 
     service = module.get<StockPriceService>(StockPriceService);
@@ -41,7 +38,6 @@ describe('StockPriceService Tests', () => {
     expect(repository).toBeDefined();
   });
 
-
   describe('Test Create Methods (C)', () => {
     it('should create a stock price', async () => {
       jest.spyOn(repository, 'create').mockResolvedValue(baseMockStockPrice);
@@ -54,7 +50,9 @@ describe('StockPriceService Tests', () => {
     it('should throw an error if the stock price is not created', async () => {
       jest.spyOn(repository, 'create').mockRejectedValue(new Error(errorMessages.FAILED_TO_CREATE_STOCK_PRICE));
 
-      await expect(service.createStockPrice(baseMockStockPrice)).rejects.toThrow(errorMessages.FAILED_TO_CREATE_STOCK_PRICE);
+      await expect(service.createStockPrice(baseMockStockPrice)).rejects.toThrow(
+        errorMessages.FAILED_TO_CREATE_STOCK_PRICE,
+      );
       expect(repository.create).toHaveBeenCalledWith(baseMockStockPrice);
     });
 
@@ -63,7 +61,7 @@ describe('StockPriceService Tests', () => {
         () => service.createStockPrice(null),
         BadRequestException,
         errorMessages.MISSING_CREATE_STOCK_PRICE_DTO,
-        jest.spyOn(repository, 'create')
+        jest.spyOn(repository, 'create'),
       );
     });
 
@@ -77,29 +75,31 @@ describe('StockPriceService Tests', () => {
     });
 
     it('should throw an error if the stock prices are not created', async () => {
-      jest.spyOn(repository, 'createMany').mockRejectedValue(new Error(errorMessages.FAILED_TO_CREATE_MANY_STOCK_PRICES));
+      jest
+        .spyOn(repository, 'createMany')
+        .mockRejectedValue(new Error(errorMessages.FAILED_TO_CREATE_MANY_STOCK_PRICES));
 
-      await expect(service.createManyStockPrices(mockStockPrices)).rejects.toThrow(errorMessages.FAILED_TO_CREATE_MANY_STOCK_PRICES);
+      await expect(service.createManyStockPrices(mockStockPrices)).rejects.toThrow(
+        errorMessages.FAILED_TO_CREATE_MANY_STOCK_PRICES,
+      );
       expect(repository.createMany).toHaveBeenCalledWith(mockStockPrices);
     });
   });
 
-
   describe('Test Read Methods (R)', () => {
-
     describe('findAllStockPrices()', () => {
       it('should find all stock prices', async () => {
         jest.spyOn(repository, 'findAll').mockResolvedValue(mockStockPrices);
-  
+
         const result = await service.findAllStockPrices();
         assertStockPrices(result, mockStockPrices);
         expect(result).toEqual(mockStockPrices);
         expect(repository.findAll).toHaveBeenCalled();
       });
-  
+
       it('should throw an error if no stock prices are found with "findAll()"', async () => {
         jest.spyOn(repository, 'findAll').mockRejectedValue(new Error(errorMessages.FAILED_TO_GET_ALL_STOCK_PRICES));
-  
+
         await expect(service.findAllStockPrices()).rejects.toThrow(errorMessages.FAILED_TO_GET_ALL_STOCK_PRICES);
         expect(repository.findAll).toHaveBeenCalled();
       });
@@ -111,12 +111,12 @@ describe('StockPriceService Tests', () => {
       const mockQuery = {
         ticker: 'AAPL',
         startDate: parseDate(startDate),
-        endDate: parseDate(endDate)
+        endDate: parseDate(endDate),
       };
 
       it('should find many stock prices', async () => {
         jest.spyOn(repository, 'findMany').mockResolvedValue(mockStockPrices);
-      
+
         const result = await service.findManyStockPrices(mockQuery.ticker, startDate, endDate);
         assertStockPrices(result, mockStockPrices);
         expect(result).toEqual(mockStockPrices);
@@ -134,7 +134,7 @@ describe('StockPriceService Tests', () => {
           () => service.findManyStockPrices(mockQuery.ticker, null, endDate),
           BadRequestException,
           errorMessages.MISSING_QUERY_PARAMS_PRICE,
-          repository.findMany
+          repository.findMany,
         );
       });
 
@@ -144,7 +144,7 @@ describe('StockPriceService Tests', () => {
           () => service.findManyStockPrices(mockQuery.ticker, startDate, endDate),
           NotFoundException,
           errorMessages.FAILED_TO_GET_MANY_STOCK_PRICES,
-          null
+          null,
         );
       });
 
@@ -155,7 +155,7 @@ describe('StockPriceService Tests', () => {
           () => service.findManyStockPrices(mockQuery.ticker, startDate, endDate),
           InternalServerErrorException,
           errorMessages.FAILED_TO_GET_MANY_STOCK_PRICES,
-          null
+          null,
         );
       });
     });
@@ -173,7 +173,9 @@ describe('StockPriceService Tests', () => {
       it('should throw an error if no stock price is found with "findOne()"', async () => {
         jest.spyOn(repository, 'findOne').mockResolvedValue(null);
 
-        await expect(service.findStockPriceById(baseMockStockPrice._id)).rejects.toThrow(errorMessages.FAILED_TO_GET_STOCK_PRICE_BY_ID);
+        await expect(service.findStockPriceById(baseMockStockPrice._id)).rejects.toThrow(
+          errorMessages.FAILED_TO_GET_STOCK_PRICE_BY_ID,
+        );
         expect(repository.findOne).toHaveBeenCalledWith(baseMockStockPrice._id);
       });
 
@@ -182,9 +184,7 @@ describe('StockPriceService Tests', () => {
         expect(repository.findOne).not.toHaveBeenCalled();
       });
     });
-
   });
-
 
   describe('Test Update Methods (U)', () => {
     it('should update a stock price', async () => {
@@ -199,16 +199,19 @@ describe('StockPriceService Tests', () => {
     it('should throw an error if the stock price is not updated', async () => {
       jest.spyOn(repository, 'update').mockRejectedValue(new Error(errorMessages.FAILED_TO_UPDATE_STOCK_PRICE));
 
-      await expect(service.updateStockPrice(updateMockStockPrice._id, updateMockStockPrice)).rejects.toThrow(errorMessages.FAILED_TO_UPDATE_STOCK_PRICE);
+      await expect(service.updateStockPrice(updateMockStockPrice._id, updateMockStockPrice)).rejects.toThrow(
+        errorMessages.FAILED_TO_UPDATE_STOCK_PRICE,
+      );
       expect(repository.update).toHaveBeenCalledWith(updateMockStockPrice._id, updateMockStockPrice);
     });
 
     it('should throw an error if updateStockPriceDto is missing', async () => {
-      await expect(service.updateStockPrice(updateMockStockPrice._id, null)).rejects.toThrow(errorMessages.MISSING_UPDATE_STOCK_PRICE_DTO);
+      await expect(service.updateStockPrice(updateMockStockPrice._id, null)).rejects.toThrow(
+        errorMessages.MISSING_UPDATE_STOCK_PRICE_DTO,
+      );
       expect(repository.update).not.toHaveBeenCalled();
     });
   });
-
 
   describe('Test Delete Methods (D)', () => {
     it('should delete a stock price', async () => {
@@ -223,7 +226,9 @@ describe('StockPriceService Tests', () => {
     it('should throw an error if the stock price is not deleted', async () => {
       jest.spyOn(repository, 'delete').mockRejectedValue(new Error(errorMessages.FAILED_TO_DELETE_STOCK_PRICE));
 
-      await expect(service.deleteStockPrice(baseMockStockPrice._id)).rejects.toThrow(errorMessages.FAILED_TO_DELETE_STOCK_PRICE);
+      await expect(service.deleteStockPrice(baseMockStockPrice._id)).rejects.toThrow(
+        errorMessages.FAILED_TO_DELETE_STOCK_PRICE,
+      );
       expect(repository.delete).toHaveBeenCalledWith(baseMockStockPrice._id);
     });
 
@@ -235,17 +240,21 @@ describe('StockPriceService Tests', () => {
     it('should delete many stock prices', async () => {
       jest.spyOn(repository, 'deleteMany').mockResolvedValue(mockStockPrices);
 
-      const result = await service.deleteManyStockPrices(mockStockPrices.map(stockPrice => stockPrice._id));
+      const result = await service.deleteManyStockPrices(mockStockPrices.map((stockPrice) => stockPrice._id));
       assertStockPrices(result, mockStockPrices);
       expect(result).toEqual(mockStockPrices);
-      expect(repository.deleteMany).toHaveBeenCalledWith(mockStockPrices.map(stockPrice => stockPrice._id));
+      expect(repository.deleteMany).toHaveBeenCalledWith(mockStockPrices.map((stockPrice) => stockPrice._id));
     });
 
     it('should throw an error if the stock prices are not deleted', async () => {
-      jest.spyOn(repository, 'deleteMany').mockRejectedValue(new Error(errorMessages.FAILED_TO_DELETE_MANY_STOCK_PRICES));
+      jest
+        .spyOn(repository, 'deleteMany')
+        .mockRejectedValue(new Error(errorMessages.FAILED_TO_DELETE_MANY_STOCK_PRICES));
 
-      await expect(service.deleteManyStockPrices(mockStockPrices.map(stockPrice => stockPrice._id))).rejects.toThrow(errorMessages.FAILED_TO_DELETE_MANY_STOCK_PRICES);
-      expect(repository.deleteMany).toHaveBeenCalledWith(mockStockPrices.map(stockPrice => stockPrice._id));
+      await expect(service.deleteManyStockPrices(mockStockPrices.map((stockPrice) => stockPrice._id))).rejects.toThrow(
+        errorMessages.FAILED_TO_DELETE_MANY_STOCK_PRICES,
+      );
+      expect(repository.deleteMany).toHaveBeenCalledWith(mockStockPrices.map((stockPrice) => stockPrice._id));
     });
   });
 });

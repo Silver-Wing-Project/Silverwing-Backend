@@ -25,9 +25,7 @@ import { StockModule } from './yahoo-client/stock/stock.module';
             : configService.get<string>('MONGODB_URI');
 
         if (!mongodbUri) {
-          console.error(
-            'Error: MongoDB URI is not defined. Check your environment variables.',
-          );
+          console.error('Error: MongoDB URI is not defined. Check your environment variables.');
           process.exit(1); // Exit the application if the URI is undefined
         }
 

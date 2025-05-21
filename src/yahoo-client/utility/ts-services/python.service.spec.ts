@@ -20,9 +20,7 @@ describe('PythonService', () => {
     }).compile();
 
     service = module.get<PythonService>(PythonService);
-    pythonExecutorService = module.get<PythonExecutorService>(
-      PythonExecutorService,
-    );
+    pythonExecutorService = module.get<PythonExecutorService>(PythonExecutorService);
   });
 
   it('should be defined', () => {
@@ -30,21 +28,11 @@ describe('PythonService', () => {
   });
 
   it('should fetch stock data', async () => {
-    const mockData = JSON.stringify([
-      { ticker: 'AAPL', date: '2023-01-01', open: 150, close: 155 },
-    ]);
-    jest
-      .spyOn(pythonExecutorService, 'runPythonScript')
-      .mockResolvedValue(mockData);
+    const mockData = JSON.stringify([{ ticker: 'AAPL', date: '2023-01-01', open: 150, close: 155 }]);
+    jest.spyOn(pythonExecutorService, 'runPythonScript').mockResolvedValue(mockData);
 
-    const result = await service.fetchStockData(
-      'AAPL',
-      '2023-01-01',
-      '2023-01-31',
-    );
-    expect(result).toEqual([
-      { ticker: 'AAPL', date: '2023-01-01', open: 150, close: 155 },
-    ]);
+    const result = await service.fetchStockData('AAPL', '2023-01-01', '2023-01-31');
+    expect(result).toEqual([{ ticker: 'AAPL', date: '2023-01-01', open: 150, close: 155 }]);
   });
 
   it('should fetch stock reports', async () => {
@@ -56,9 +44,7 @@ describe('PythonService', () => {
         content: '{}',
       },
     ]);
-    jest
-      .spyOn(pythonExecutorService, 'runPythonScript')
-      .mockResolvedValue(mockData);
+    jest.spyOn(pythonExecutorService, 'runPythonScript').mockResolvedValue(mockData);
 
     const result = await service.fetchStockReports('AAPL', 'financials');
     expect(result).toEqual([
@@ -72,22 +58,16 @@ describe('PythonService', () => {
   });
 
   it('should handle errors when fetching stock data', async () => {
-    jest
-      .spyOn(pythonExecutorService, 'runPythonScript')
-      .mockRejectedValue(new Error('Failed to fetch stock data'));
+    jest.spyOn(pythonExecutorService, 'runPythonScript').mockRejectedValue(new Error('Failed to fetch stock data'));
 
-    await expect(
-      service.fetchStockData('AAPL', '2023-01-01', '2023-01-31'),
-    ).rejects.toThrow('Failed to fetch stock data');
+    await expect(service.fetchStockData('AAPL', '2023-01-01', '2023-01-31')).rejects.toThrow(
+      'Failed to fetch stock data',
+    );
   });
 
   it('should handle errors when fetching stock reports', async () => {
-    jest
-      .spyOn(pythonExecutorService, 'runPythonScript')
-      .mockRejectedValue(new Error('Failed to fetch stock reports'));
+    jest.spyOn(pythonExecutorService, 'runPythonScript').mockRejectedValue(new Error('Failed to fetch stock reports'));
 
-    await expect(
-      service.fetchStockReports('AAPL', 'financials'),
-    ).rejects.toThrow('Failed to fetch stock reports');
+    await expect(service.fetchStockReports('AAPL', 'financials')).rejects.toThrow('Failed to fetch stock reports');
   });
 });

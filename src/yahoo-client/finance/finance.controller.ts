@@ -1,19 +1,6 @@
-import {
-  Controller,
-  Get,
-  InternalServerErrorException,
-  Query,
-  Param,
-  UseFilters,
-} from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException, Query, Param, UseFilters } from '@nestjs/common';
 
-import {
-  ApiTags,
-  ApiOperation,
-  ApiQuery,
-  ApiParam,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { AllExceptionsFilter } from '../utility/filters/all-exceptions.filter';
 
@@ -22,10 +9,7 @@ import { StockReportService } from '../stock/stock-report/stock-report.service';
 import { StockPriceService } from './../stock/stock-price/stock-price.service';
 import { StockPrice } from '../stock/stock-price/entities/stock-price.schema';
 import { StockReport } from '../stock/stock-report/entities/stock-report.schema';
-import {
-  parseStockPricesData,
-  parseStockReportsData,
-} from '../utility/data-parsers/data-parser.utils';
+import { parseStockPricesData, parseStockReportsData } from '../utility/data-parsers/data-parser.utils';
 
 @ApiTags('Finance')
 @Controller('finance')
@@ -74,31 +58,19 @@ export class FinanceController {
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ): Promise<StockPrice[]> {
-    const existingPrices = await this.stockPriceService.findManyStockPrices(
-      ticker,
-      startDate,
-      endDate,
-    );
+    const existingPrices = await this.stockPriceService.findManyStockPrices(ticker, startDate, endDate);
     if (existingPrices.length > 0) {
       return existingPrices;
     }
 
-    const stockPricesData = await this.pythonService.fetchStockData(
-      ticker,
-      startDate,
-      endDate,
-    );
+    const stockPricesData = await this.pythonService.fetchStockData(ticker, startDate, endDate);
 
     if (!Array.isArray(stockPricesData)) {
-      throw new InternalServerErrorException(
-        'Invalid data format received from Python service',
-      );
+      throw new InternalServerErrorException('Invalid data format received from Python service');
     }
 
     const parsedStockPricesData = parseStockPricesData(stockPricesData);
-    const stockPrices = await this.stockPriceService.createManyStockPrices(
-      parsedStockPricesData,
-    );
+    const stockPrices = await this.stockPriceService.createManyStockPrices(parsedStockPricesData);
     return stockPrices;
   }
 
@@ -130,23 +102,15 @@ export class FinanceController {
     @Param('ticker') ticker: string,
     @Query('reportType') reportType: string,
   ): Promise<StockReport[]> {
-    const existingReports = await this.stockReportService.findManyStockReports(
-      ticker,
-      reportType,
-    );
+    const existingReports = await this.stockReportService.findManyStockReports(ticker, reportType);
     if (existingReports.length > 0) {
       return existingReports;
     }
 
-    const stockReportsData = await this.pythonService.fetchStockReports(
-      ticker,
-      reportType,
-    );
+    const stockReportsData = await this.pythonService.fetchStockReports(ticker, reportType);
 
     const parsedStockReportsData = parseStockReportsData(stockReportsData);
-    const stockReports = await this.stockReportService.createManyStockReports(
-      parsedStockReportsData,
-    );
+    const stockReports = await this.stockReportService.createManyStockReports(parsedStockReportsData);
     return stockReports;
   }
 }

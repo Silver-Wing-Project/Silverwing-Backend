@@ -17,10 +17,7 @@ describe('StockPriceRepository', () => {
     volume: 1000000,
   };
 
-  const mockStockPrices: StockPrice[] = [
-    mockStockPrice,
-    { ...mockStockPrice, _id: '507f1f77bcf86cd799439012' },
-  ];
+  const mockStockPrices: StockPrice[] = [mockStockPrice, { ...mockStockPrice, _id: '507f1f77bcf86cd799439012' }];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -41,8 +38,7 @@ describe('StockPriceRepository', () => {
       ],
     }).compile();
 
-    stockPriceRepository =
-      module.get<StockPriceRepository>(StockPriceRepository);
+    stockPriceRepository = module.get<StockPriceRepository>(StockPriceRepository);
   });
 
   it('should be defined', () => {
@@ -50,9 +46,7 @@ describe('StockPriceRepository', () => {
   });
 
   it('should create stock price object successfully', async () => {
-    jest
-      .spyOn(stockPriceRepository, 'create')
-      .mockResolvedValueOnce(mockStockPrice);
+    jest.spyOn(stockPriceRepository, 'create').mockResolvedValueOnce(mockStockPrice);
 
     const result = await stockPriceRepository.create(mockStockPrice);
     expect(result).toEqual(mockStockPrice);
@@ -62,21 +56,15 @@ describe('StockPriceRepository', () => {
   });
 
   it('should create multiple stock price objects successfully', async () => {
-    jest
-      .spyOn(stockPriceRepository, 'createMany')
-      .mockResolvedValueOnce(mockStockPrices);
+    jest.spyOn(stockPriceRepository, 'createMany').mockResolvedValueOnce(mockStockPrices);
 
     const result = await stockPriceRepository.createMany(mockStockPrices);
     expect(result).toEqual(mockStockPrices);
-    expect(stockPriceRepository.createMany).toHaveBeenCalledWith(
-      mockStockPrices,
-    );
+    expect(stockPriceRepository.createMany).toHaveBeenCalledWith(mockStockPrices);
   });
 
   it('should find all stock price objects successfully', async () => {
-    jest
-      .spyOn(stockPriceRepository, 'findAll')
-      .mockResolvedValueOnce(mockStockPrices);
+    jest.spyOn(stockPriceRepository, 'findAll').mockResolvedValueOnce(mockStockPrices);
 
     const result = await stockPriceRepository.findAll();
     expect(result).toEqual(mockStockPrices);
@@ -85,9 +73,7 @@ describe('StockPriceRepository', () => {
 
   it('should find stock price objects by query successfully', async () => {
     const query = { ticker: 'AAPL' };
-    jest
-      .spyOn(stockPriceRepository, 'findMany')
-      .mockResolvedValueOnce(mockStockPrices);
+    jest.spyOn(stockPriceRepository, 'findMany').mockResolvedValueOnce(mockStockPrices);
 
     const result = await stockPriceRepository.findMany(query);
     expect(result).toEqual(mockStockPrices);
@@ -95,12 +81,8 @@ describe('StockPriceRepository', () => {
   });
 
   it('should find stock price object successfully', async () => {
-    jest
-      .spyOn(stockPriceRepository, 'create')
-      .mockResolvedValueOnce(mockStockPrice);
-    jest
-      .spyOn(stockPriceRepository, 'findOne')
-      .mockResolvedValueOnce(mockStockPrice);
+    jest.spyOn(stockPriceRepository, 'create').mockResolvedValueOnce(mockStockPrice);
+    jest.spyOn(stockPriceRepository, 'findOne').mockResolvedValueOnce(mockStockPrice);
     await stockPriceRepository.create(mockStockPrice);
     const mockStockPriceId = mockStockPrice._id;
     const result = await stockPriceRepository.findOne(mockStockPriceId);
@@ -111,34 +93,20 @@ describe('StockPriceRepository', () => {
   });
 
   it('should update stock price object successfully', async () => {
-    jest
-      .spyOn(stockPriceRepository, 'create')
-      .mockResolvedValueOnce(mockStockPrice);
-    jest
-      .spyOn(stockPriceRepository, 'update')
-      .mockResolvedValueOnce(mockStockPrice);
+    jest.spyOn(stockPriceRepository, 'create').mockResolvedValueOnce(mockStockPrice);
+    jest.spyOn(stockPriceRepository, 'update').mockResolvedValueOnce(mockStockPrice);
     await stockPriceRepository.create(mockStockPrice);
     const mockStockPriceId = mockStockPrice._id;
-    const result = await stockPriceRepository.update(
-      mockStockPriceId,
-      mockStockPrice,
-    );
+    const result = await stockPriceRepository.update(mockStockPriceId, mockStockPrice);
     expect(result).toEqual(mockStockPrice);
-    expect(stockPriceRepository.update).toHaveBeenCalledWith(
-      mockStockPriceId,
-      mockStockPrice,
-    );
+    expect(stockPriceRepository.update).toHaveBeenCalledWith(mockStockPriceId, mockStockPrice);
     expect(result).toHaveProperty('ticker', 'AAPL');
     expect(result).toHaveProperty('date', new Date('2021-01-01'));
   });
 
   it('should delete stock price object successfully', async () => {
-    jest
-      .spyOn(stockPriceRepository, 'create')
-      .mockResolvedValueOnce(mockStockPrice);
-    jest
-      .spyOn(stockPriceRepository, 'delete')
-      .mockResolvedValueOnce(mockStockPrice);
+    jest.spyOn(stockPriceRepository, 'create').mockResolvedValueOnce(mockStockPrice);
+    jest.spyOn(stockPriceRepository, 'delete').mockResolvedValueOnce(mockStockPrice);
     await stockPriceRepository.create(mockStockPrice);
     const mockStockPriceId = mockStockPrice._id;
     const result = await stockPriceRepository.delete(mockStockPriceId);
@@ -149,9 +117,7 @@ describe('StockPriceRepository', () => {
   });
 
   it('should delete multiple stock price objects successfully', async () => {
-    jest
-      .spyOn(stockPriceRepository, 'deleteMany')
-      .mockResolvedValueOnce({ deletedCount: 2 });
+    jest.spyOn(stockPriceRepository, 'deleteMany').mockResolvedValueOnce({ deletedCount: 2 });
 
     const ids = mockStockPrices.map((stockPrice) => stockPrice._id);
     const result = await stockPriceRepository.deleteMany(ids);

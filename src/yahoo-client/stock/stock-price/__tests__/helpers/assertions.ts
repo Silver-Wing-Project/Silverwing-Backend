@@ -9,7 +9,7 @@ export const assertStockPrice = (actual: StockPrice, expected: StockPrice) => {
     close: expected.close,
     high: expected.high,
     low: expected.low,
-    volume: expected.volume
+    volume: expected.volume,
   });
 };
 

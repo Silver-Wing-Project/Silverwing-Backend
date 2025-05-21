@@ -9,9 +9,10 @@ export const baseMockStockReport: CreateStockReportDto = {
   date: parseDate('2025-01-01'),
   reportType: 'stock-price',
   content: {
-    "Tax Effect Of Unusual Items": 0,
-    "Tax Rate For Calcs":0.12,
-    "Total Unusual Items":0  }
+    'Tax Effect Of Unusual Items': 0,
+    'Tax Rate For Calcs': 0.12,
+    'Total Unusual Items': 0,
+  },
 };
 
 export const updateMockStockReport: UpdateStockReportDto = {
@@ -21,8 +22,8 @@ export const updateMockStockReport: UpdateStockReportDto = {
   reportType: baseMockStockReport.reportType,
   content: {
     ...baseMockStockReport.content,
-    "Tax Rate For Calcs": baseMockStockReport.content["Tax Rate For Calcs"] + 0.01
-  }
+    'Tax Rate For Calcs': baseMockStockReport.content['Tax Rate For Calcs'] + 0.01,
+  },
 };
 
 export const generateMockStockReports = (count: number): StockReport[] =>

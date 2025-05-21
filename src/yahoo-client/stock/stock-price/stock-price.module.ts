@@ -6,11 +6,7 @@ import { StockPriceRepository } from './repositories/stock-price.repository';
 import { StockPrice, StockPriceSchema } from './entities/stock-price.schema';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: StockPrice.name, schema: StockPriceSchema },
-    ]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: StockPrice.name, schema: StockPriceSchema }])],
   controllers: [StockPriceController],
   providers: [StockPriceService, StockPriceRepository],
   exports: [StockPriceService, StockPriceRepository],
