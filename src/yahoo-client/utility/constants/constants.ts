@@ -10,12 +10,9 @@ export const errorMessages = {
   FAILED_TO_DELETE_MANY_STOCK_PRICES: 'Error deleting many stock prices',
 
   // StockPrice Parameters
-  MISSING_QUERY_PARAMS_PRICE:
-    'Missing required query parameters: ticker, startDate, endDate',
-  MISSING_CREATE_STOCK_PRICE_DTO:
-    'Missing required body parameter: createStockPriceDto',
-  MISSING_UPDATE_STOCK_PRICE_DTO:
-    'Missing required body parameter: updateStockPriceDto or _id',
+  MISSING_QUERY_PARAMS_PRICE: 'Missing required query parameters: ticker, startDate, endDate',
+  MISSING_CREATE_STOCK_PRICE_DTO: 'Missing required body parameter: createStockPriceDto',
+  MISSING_UPDATE_STOCK_PRICE_DTO: 'Missing required body parameter: updateStockPriceDto or _id',
 
   // ID parameters
   MISSING_ID_PARAM: 'Missing required parameter: _id',
@@ -32,10 +29,7 @@ export const errorMessages = {
   FAILED_TO_DELETE_MANY_STOCK_REPORTS: 'Error deleting many stock reports',
 
   // StockReport Parameters
-  MISSING_QUERY_PARAMS_REPORT:
-    'Missing required query parameters: ticker, reportType',
-  MISSING_CREATE_STOCK_REPORT_DTO:
-    'Missing required body parameter: createStockReportDto',
-  MISSING_UPDATE_STOCK_REPORT_DTO:
-    'Missing required body parameter: updateStockReportDto or _id',
+  MISSING_QUERY_PARAMS_REPORT: 'Missing required query parameters: ticker, reportType',
+  MISSING_CREATE_STOCK_REPORT_DTO: 'Missing required body parameter: createStockReportDto',
+  MISSING_UPDATE_STOCK_REPORT_DTO: 'Missing required body parameter: updateStockReportDto or _id',
 };

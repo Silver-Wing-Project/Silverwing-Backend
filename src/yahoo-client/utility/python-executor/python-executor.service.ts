@@ -14,10 +14,7 @@ export class PythonExecutionError extends Error {
 export class PythonExecutorService {
   private readonly logger = new Logger(PythonExecutorService.name);
 
-  async executePythonScript(
-    scriptPath: string,
-    args: string[] = [],
-  ): Promise<string> {
+  async executePythonScript(scriptPath: string, args: string[] = []): Promise<string> {
     const command = `python ${scriptPath} ${args.join(' ')}`;
     const options = {
       cwd: process.cwd(),
@@ -32,9 +29,7 @@ export class PythonExecutorService {
         // Handle non-error warnings (like FutureWarning)
         if (stderr && !stderr.includes('FutureWarning')) {
           this.logger.error(`Python script stderr: ${stderr}`);
-          reject(
-            new PythonExecutionError('Python script execution failed', stderr),
-          );
+          reject(new PythonExecutionError('Python script execution failed', stderr));
           return;
         }
 
