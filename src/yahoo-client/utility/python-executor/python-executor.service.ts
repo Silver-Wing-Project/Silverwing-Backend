@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { exec } from 'child_process';
 
 export class PythonExecutionError extends Error {
@@ -26,15 +26,34 @@ export class PythonExecutorService {
 
     return new Promise((resolve, reject) => {
       exec(command, options, (error, stdout, stderr) => {
-        // Handle non-error warnings (like FutureWarning)
+        try {
+          const parsed = JSON.parse(stdout);
+          if (parsed && parsed.error) {
+            this.logger.error(`Python script error: ${parsed.error}`);
+            reject(new NotFoundException(`Python script error: ${parsed.error}`));
+            return;
+          }
+        } catch (e) {
+          // stdout is not JSON, continue
+          this.logger.debug(`Python script output is not JSON. e.message: ${e.message}`);
+        }
+
         if (stderr && !stderr.includes('FutureWarning')) {
           this.logger.error(`Python script stderr: ${stderr}`);
+          if (stderr.includes('not found')) {
+            reject(new NotFoundException(`Python script or stock ticker not found: ${stderr}`));
+            return;
+          }
           reject(new PythonExecutionError('Python script execution failed', stderr));
           return;
         }
 
         if (error) {
           this.logger.error(`Error executing Python script: ${error.message}`);
+          if (error.message.includes('not found') || error.message.includes('no data found')) {
+            reject(new NotFoundException(`Python script not found: ${error.message}`));
+            return;
+          }
           reject(new PythonExecutionError(error.message, stderr));
           return;
         }
