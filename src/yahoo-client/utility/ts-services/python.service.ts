@@ -17,6 +17,18 @@ export class PythonService {
       endDate,
     ]);
 
+    if (typeof stockPricesData === 'string') {
+      try {
+        const parsed = JSON.parse(stockPricesData);
+        if (parsed && parsed.error) {
+          throw new NotFoundException(`(pythonService)Python script error: ${parsed.error}`);
+        }
+      } catch (e) {
+        // stdout is not JSON, continue
+        console.log(`Python script output is not JSON. e.message: ${e.message}`);
+      }
+    }
+
     if (stockPricesData === '[]') {
       throw new NotFoundException(`No stock prices found for ${ticker}`);
     }

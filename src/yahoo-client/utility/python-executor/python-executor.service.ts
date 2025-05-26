@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { normalizePythonError } from './python-error.utils';
 import { exec } from 'child_process';
 
 export class PythonExecutionError extends Error {
@@ -13,6 +14,15 @@ export class PythonExecutionError extends Error {
 @Injectable()
 export class PythonExecutorService {
   private readonly logger = new Logger(PythonExecutorService.name);
+
+  private static readonly NOT_FOUND_PATTERNS = [
+    'not found',
+    'no price data',
+    'no price data found',
+    'possibly delisted',
+    'delisted',
+    'no data found',
+  ];
 
   async executePythonScript(scriptPath: string, args: string[] = []): Promise<string> {
     const command = `python ${scriptPath} ${args.join(' ')}`;
@@ -30,18 +40,19 @@ export class PythonExecutorService {
           const parsed = JSON.parse(stdout);
           if (parsed && parsed.error) {
             this.logger.error(`Python script error: ${parsed.error}`);
-            reject(new NotFoundException(`Python script error: ${parsed.error}`));
+            const cleanMsg = normalizePythonError(parsed.error, args[1]);
+            reject(new NotFoundException(cleanMsg));
             return;
           }
         } catch (e) {
-          // stdout is not JSON, continue
           this.logger.debug(`Python script output is not JSON. e.message: ${e.message}`);
         }
 
-        if (stderr && !stderr.includes('FutureWarning')) {
+        if (stderr && !stderr.toLowerCase().includes('futurewarning')) {
           this.logger.error(`Python script stderr: ${stderr}`);
-          if (stderr.includes('not found')) {
-            reject(new NotFoundException(`Python script or stock ticker not found: ${stderr}`));
+          if (PythonExecutorService.NOT_FOUND_PATTERNS.some((pattern) => stderr.includes(pattern))) {
+            const cleanMsg = normalizePythonError(stderr, args[1]);
+            reject(new NotFoundException(cleanMsg));
             return;
           }
           reject(new PythonExecutionError('Python script execution failed', stderr));
@@ -50,17 +61,17 @@ export class PythonExecutorService {
 
         if (error) {
           this.logger.error(`Error executing Python script: ${error.message}`);
-          if (error.message.includes('not found') || error.message.includes('no data found')) {
-            reject(new NotFoundException(`Python script not found: ${error.message}`));
+          if (
+            PythonExecutorService.NOT_FOUND_PATTERNS.some((pattern) =>
+              error.message.toLocaleLowerCase().includes(pattern),
+            )
+          ) {
+            const cleanMsg = normalizePythonError(error.message, args[1]);
+            reject(new NotFoundException(cleanMsg));
             return;
           }
           reject(new PythonExecutionError(error.message, stderr));
           return;
-        }
-
-        // Log warnings but don't fail
-        if (stderr) {
-          this.logger.warn(`Python script warning: ${stderr}`);
         }
 
         this.logger.debug(`Python script stdout: ${stdout}`);
