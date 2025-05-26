@@ -51,7 +51,7 @@ export class FinanceController {
     description: 'The stock prices have been successfully fetched.',
   })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiResponse({ status: 404, description: 'Stock prices not found.' })
+  @ApiResponse({ status: 404, description: 'Stock prices not found or invalid stock ticker' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   async fetchStockPrices(
     @Param('ticker') ticker: string,

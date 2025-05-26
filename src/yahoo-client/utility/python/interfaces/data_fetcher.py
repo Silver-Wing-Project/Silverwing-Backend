@@ -4,6 +4,7 @@ from typing import Dict
 import json
 import os
 import sys
+import traceback
 
 # Add the parent directory to the sys.path to resolve the common module
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -26,6 +27,11 @@ class DataFetcher:
             stock = yf.Ticker(ticker)
             df = stock.history(start=start_date, end=end_date)
 
+            if df.empty:
+                error_message = json.dumps({'error': f"No price data found for ticker '{ticker}' in the given date range."})
+                print(error_message)
+                sys.exit(1)
+
             # Convert the data to a format suitable for MongoDB
             price_data = [{
                 'ticker': ticker,
@@ -41,9 +47,12 @@ class DataFetcher:
             prices_data_json = json.dumps(price_data, cls=DateTimeEncoder)
             return prices_data_json
         except Exception as e:
-            error_message = json.dumps({'error': f"Unexpected error: {str(e)}"})
+            error_message = json.dumps({
+                'error': f"Unexpected error: {str(e)}",
+                'traceback': traceback.format_exc()
+            })
             print(error_message)
-            return error_message
+            sys.exit(1)
 
     
     @staticmethod

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PythonExecutorService } from '../python-executor/python-executor.service';
 import * as path from 'path';
 
@@ -16,6 +16,22 @@ export class PythonService {
       startDate,
       endDate,
     ]);
+
+    if (typeof stockPricesData === 'string') {
+      try {
+        const parsed = JSON.parse(stockPricesData);
+        if (parsed && parsed.error) {
+          throw new NotFoundException(`(pythonService)Python script error: ${parsed.error}`);
+        }
+      } catch (e) {
+        // stdout is not JSON, continue
+        console.log(`Python script output is not JSON. e.message: ${e.message}`);
+      }
+    }
+
+    if (stockPricesData === '[]') {
+      throw new NotFoundException(`No stock prices found for ${ticker}`);
+    }
     return JSON.parse(stockPricesData);
   }
 
