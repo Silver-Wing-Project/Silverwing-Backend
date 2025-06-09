@@ -2,14 +2,12 @@ import { Controller, Get, InternalServerErrorException, Query, Param } from '@ne
 
 import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiResponse } from '@nestjs/swagger';
 
-// import { AllExceptionsFilter } from '../utility/filters/all-exceptions.filter';
-// import { HttpExceptionFilter } from '../utility/filters/http-exception.filter';
-import { PythonService } from '../utility/ts-services/python.service';
-import { StockReportService } from '../stock/stock-report/stock-report.service';
-import { StockPriceService } from './../stock/stock-price/stock-price.service';
-import { StockPrice } from '../stock/stock-price/entities/stock-price.schema';
-import { StockReport } from '../stock/stock-report/entities/stock-report.schema';
-import { parseStockPricesData, parseStockReportsData } from '../utility/data-parsers/data-parser.utils';
+import { PythonService } from '@utility/ts-services/python.service';
+import { StockReportService } from '@stock/stock-report/stock-report.service';
+import { StockPriceService } from '@stock/stock-price/stock-price.service';
+import { StockPrice } from '@stock/stock-price/entities/stock-price.schema';
+import { StockReport } from '@stock/stock-report/entities/stock-report.schema';
+import { parseStockPricesData, parseStockReportsData } from '@utility/data-parsers/data-parser.utils';
 
 @ApiTags('Finance')
 @Controller('finance')
