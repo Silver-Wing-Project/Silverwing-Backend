@@ -10,8 +10,8 @@ import { CreateStockPriceDto } from './dto/create-stock-price.dto';
 import { UpdateStockPriceDto } from './dto/update-stock-price.dto';
 import { StockPrice } from './entities/stock-price.schema';
 import { plainToClass } from 'class-transformer';
-import { parseDate } from '../../utility/date-parser/date-parser.utils';
-import { errorMessages } from '../../utility/constants/constants';
+import { parseDate } from '@utility/date-parser/date-parser.utils';
+import { errorMessages } from '@utility/constants/constants';
 import { ServiceErrorHandler } from '../utils/service-error.handler';
 
 @Injectable()

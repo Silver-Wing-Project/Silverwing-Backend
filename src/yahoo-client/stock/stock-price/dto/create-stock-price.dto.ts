@@ -1,7 +1,7 @@
 import { IsString, IsDate, IsNumber, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { parseDate } from '../../../utility/date-parser/date-parser.utils';
+import { parseDate } from '@utility/date-parser/date-parser.utils';
 
 export class CreateStockPriceDto {
   @ApiProperty({ description: 'Stock Price ID' })
