@@ -1,4 +1,4 @@
-import { StockReport } from '../../entities/stock-report.schema';
+import { StockReport } from '@stock-report/entities/stock-report.schema';
 
 export const assertStockReport = (actual: StockReport, expected: StockReport) => {
   expect(actual).toMatchObject({

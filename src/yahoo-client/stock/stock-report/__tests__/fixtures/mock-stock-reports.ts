@@ -1,7 +1,7 @@
-import { StockReport } from '../../entities/stock-report.schema';
-import { parseDate } from '../../../../utility/date-parser/date-parser.utils';
-import { CreateStockReportDto } from '../../dto/create-stock-report.dto';
-import { UpdateStockReportDto } from '../../dto/update-stock-report.dto';
+import { StockReport } from '@stock-report/entities/stock-report.schema';
+import { parseDate } from '@utility/date-parser/date-parser.utils';
+import { CreateStockReportDto } from '@stock-report/dto/create-stock-report.dto';
+import { UpdateStockReportDto } from '@stock-report/dto/update-stock-report.dto';
 
 export const baseMockStockReport: CreateStockReportDto = {
   _id: '507f1f77bcf86cd799439016',

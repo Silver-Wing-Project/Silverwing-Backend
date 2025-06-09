@@ -3,7 +3,7 @@ import { StockReportService } from './stock-report.service';
 import { CreateStockReportDto } from './dto/create-stock-report.dto';
 import { UpdateStockReportDto } from './dto/update-stock-report.dto';
 import { ApiTags, ApiOperation, ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { AllExceptionsFilter } from '../../utility/filters/all-exceptions.filter';
+import { AllExceptionsFilter } from '@utility/filters/all-exceptions.filter';
 
 @ApiTags('stock-reports')
 @Controller('stock-reports')

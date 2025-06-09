@@ -10,7 +10,7 @@ import { CreateStockReportDto } from './dto/create-stock-report.dto';
 import { UpdateStockReportDto } from './dto/update-stock-report.dto';
 import { StockReport } from './entities/stock-report.schema';
 import { plainToClass } from 'class-transformer';
-import { errorMessages } from '../../utility/constants/constants';
+import { errorMessages } from '@utility/constants/constants';
 import { ServiceErrorHandler } from '../utils/service-error.handler';
 
 @Injectable()
