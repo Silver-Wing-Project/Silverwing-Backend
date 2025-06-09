@@ -38,28 +38,6 @@ export class PythonExecutorService {
         try {
           const parsed = JSON.parse(stdout);
           if (parsed && parsed.error && this.classifyAndRejectError(parsed.error, args[1], reject, this.logger)) return;
-          // if (parsed && parsed.error) {
-          //   //check #1 parsed.error
-          //   this.logger.error(`Python script error: ${parsed.error}`);
-          //   const cleanMsg = normalizePythonError(parsed.error, args[1]);
-          //   // Rate limit errors
-          //   if (rateLimitExceptionPatterns.some((pattern) => parsed.error.toLowerCase().includes(pattern))) {
-          //     this.logger.warn(`Rate limit error detected: ${parsed.error}`);
-          //     reject(new HttpException(cleanMsg, HttpStatus.TOO_MANY_REQUESTS));
-          //     return;
-          //   }
-          //   // Not found errors
-          //   if (notFoundExceptionPatterns.some((pattern) => parsed.error.toLowerCase().includes(pattern))) {
-          //     this.logger.warn(`Not found error detected: ${parsed.error}`);
-          //     reject(new NotFoundException(cleanMsg));
-          //     return;
-          //   }
-
-          //   // Internal Server Error
-          //   this.logger.error(`Python script execution failed with error: ${parsed.error}`);
-          //   reject(new InternalServerErrorException(cleanMsg));
-          //   return;
-          // }
         } catch (e) {
           this.logger.debug(`Python script output is not JSON. e.message: ${e.message}`);
         }
@@ -68,43 +46,11 @@ export class PythonExecutorService {
           stderr &&
           !stderr.toLowerCase().includes('futurewarning') &&
           this.classifyAndRejectError(stderr, args[1], reject, this.logger)
-        )
+        ) {
           return;
-        //   //check #2 stderr
-        //   this.logger.error(`Python script stderr: ${stderr}`);
-        //   const cleanMsg = normalizePythonError(stderr, args[1]);
-
-        //   if (rateLimitExceptionPatterns.some((pattern) => stderr.toLowerCase().includes(pattern))) {
-        //     this.logger.warn(`Rate limit error detected in stderr: ${stderr}`);
-        //     reject(new HttpException(cleanMsg, HttpStatus.TOO_MANY_REQUESTS));
-        //     return;
-        //   }
-        //   if (notFoundExceptionPatterns.some((pattern) => stderr.toLowerCase().includes(pattern))) {
-        //     this.logger.warn(`Not found error detected in stderr: ${stderr}`);
-        //     reject(new NotFoundException(cleanMsg));
-        //     return;
-        //   }
-        //   reject(new PythonExecutionError('Python script execution failed', stderr));
-        //   return;
-        // }
+        }
 
         if (error && this.classifyAndRejectError(error.message, args[1], reject, this.logger)) return;
-        //   //check #3 error
-        //   this.logger.error(`Error executing Python script: ${error.message}`);
-        //   const cleanMsg = normalizePythonError(error.message, args[1]);
-
-        //   if (rateLimitExceptionPatterns.some((pattern) => error.message.toLowerCase().includes(pattern))) {
-        //     this.logger.warn(`Rate limit error detected in error message: ${error.message}`);
-        //     reject(new HttpException(cleanMsg, HttpStatus.TOO_MANY_REQUESTS));
-        //     return;
-        //   }
-        //   if (notFoundExceptionPatterns.some((pattern) => error.message.toLowerCase().includes(pattern))) {
-        //     reject(new NotFoundException(cleanMsg));
-        //     return;
-        //   }
-        //   reject(new PythonExecutionError(error.message, stderr));
-        //   return;
-        // }
 
         this.logger.debug(`Python script stdout: ${stdout}`);
         resolve(stdout.trim());
