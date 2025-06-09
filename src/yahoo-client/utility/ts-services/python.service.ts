@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PythonExecutorService } from '../python-executor/python-executor.service';
+import { PythonExecutorService } from '@python-executor/python-executor.service';
 import * as path from 'path';
 
 @Injectable()

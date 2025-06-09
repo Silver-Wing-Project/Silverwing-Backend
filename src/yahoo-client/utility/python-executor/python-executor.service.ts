@@ -7,7 +7,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { notFoundExceptionPatterns, rateLimitExceptionPatterns } from '../constants/constants';
-import { normalizePythonError } from './python-error.utils';
+import { normalizePythonError } from '@python-executor/python-error.utils';
 import { exec } from 'child_process';
 
 export class PythonExecutionError extends Error {
