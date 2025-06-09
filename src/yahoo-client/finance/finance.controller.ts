@@ -1,9 +1,9 @@
-import { Controller, Get, InternalServerErrorException, Query, Param, UseFilters } from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException, Query, Param } from '@nestjs/common';
 
 import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiResponse } from '@nestjs/swagger';
 
-import { AllExceptionsFilter } from '../utility/filters/all-exceptions.filter';
-
+// import { AllExceptionsFilter } from '../utility/filters/all-exceptions.filter';
+// import { HttpExceptionFilter } from '../utility/filters/http-exception.filter';
 import { PythonService } from '../utility/ts-services/python.service';
 import { StockReportService } from '../stock/stock-report/stock-report.service';
 import { StockPriceService } from './../stock/stock-price/stock-price.service';
@@ -13,7 +13,6 @@ import { parseStockPricesData, parseStockReportsData } from '../utility/data-par
 
 @ApiTags('Finance')
 @Controller('finance')
-@UseFilters(AllExceptionsFilter)
 export class FinanceController {
   constructor(
     private readonly pythonService: PythonService,
