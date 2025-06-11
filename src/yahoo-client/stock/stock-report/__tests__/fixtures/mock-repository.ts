@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
-import { StockReportRepository } from '../../repositories/stock-report.repository';
-import { StockReport, StockReportDocument } from '../../entities/stock-report.schema';
+import { StockReportRepository } from '@stock-report/repositories/stock-report.repository';
+import { StockReport, StockReportDocument } from '@stock-report/entities/stock-report.schema';
 
 export type MockStockReportRepository = {
   [K in keyof StockReportRepository]: jest.Mock;

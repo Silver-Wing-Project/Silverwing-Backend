@@ -3,8 +3,8 @@ import { BadRequestException, InternalServerErrorException, NotFoundException } 
 import { StockPriceService } from '../stock-price.service';
 import { StockPriceRepository } from '../repositories/stock-price.repository';
 import { StockPrice } from '../entities/stock-price.schema';
-import { parseDate } from '../../../utility/date-parser/date-parser.utils';
-import { errorMessages } from '../../../utility/constants/constants';
+import { parseDate } from '@utility/date-parser/date-parser.utils';
+import { errorMessages } from '@utility/constants/constants';
 import { createMockRepository } from './fixtures/mock-repository';
 import { assertStockPrice, assertStockPrices } from './helpers/assertions';
 import { testErrorHandling } from './helpers/error-handlers';

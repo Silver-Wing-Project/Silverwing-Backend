@@ -1,7 +1,7 @@
-import { StockPrice } from '../../entities/stock-price.schema';
-import { parseDate } from '../../../../utility/date-parser/date-parser.utils';
-import { CreateStockPriceDto } from '../../dto/create-stock-price.dto';
-import { UpdateStockPriceDto } from '../../dto/update-stock-price.dto';
+import { StockPrice } from '@stock-price/entities/stock-price.schema';
+import { parseDate } from '@utility/date-parser/date-parser.utils';
+import { CreateStockPriceDto } from '@stock-price/dto/create-stock-price.dto';
+import { UpdateStockPriceDto } from '@stock-price/dto/update-stock-price.dto';
 
 export const baseMockStockPrice: CreateStockPriceDto = {
   _id: '507f1f77bcf86cd799439016',

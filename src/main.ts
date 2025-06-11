@@ -1,6 +1,9 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './yahoo-client/utility/filters/http-exception.filter';
+import { AllExceptionsFilter } from './yahoo-client/utility/filters/all-exceptions.filter';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +15,11 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
     credentials: true,
   });
+
+  const configService = app.get(ConfigService);
+  const httpAdapterHost = app.get(HttpAdapterHost);
+
+  app.useGlobalFilters(new HttpExceptionFilter(configService), new AllExceptionsFilter(httpAdapterHost));
 
   const config = new DocumentBuilder()
     .setTitle('API Documentation')

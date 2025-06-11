@@ -33,3 +33,15 @@ export const errorMessages = {
   MISSING_CREATE_STOCK_REPORT_DTO: 'Missing required body parameter: createStockReportDto',
   MISSING_UPDATE_STOCK_REPORT_DTO: 'Missing required body parameter: updateStockReportDto or _id',
 };
+
+export const notFoundExceptionPatterns = [
+  'not found',
+  'no price data',
+  'no price data found',
+  'possibly delisted',
+  'delisted',
+  'no data found',
+  '404',
+];
+
+export const rateLimitExceptionPatterns = ['rate limit exceeded', 'too many requests', 'rate limited', '429'];

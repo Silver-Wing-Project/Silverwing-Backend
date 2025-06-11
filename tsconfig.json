@@ -16,6 +16,19 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@finance/*": ["./src/yahoo-client/finance/*"],
+      "@stock/*": ["./src/yahoo-client/stock/*"],
+      "@stock-price/*": ["./src/yahoo-client/stock/stock-price/*"],
+      "@stock-report/*": ["./src/yahoo-client/stock/stock-report/*"],
+      "@utility/*": ["./src/yahoo-client/utility/*"],
+      "@constants/*": ["./src/yahoo-client/utility/constants/*"],
+      "@filters/*": ["./src/yahoo-client/utility/filters/*"],
+      "@python/*": ["./src/yahoo-client/utility/python/*"],
+      "@python-executor/*": ["./src/yahoo-client/utility/python-executor/*"],
+      "@ts-services/*": ["./src/yahoo-client/utility/ts-services/*"],
+    }
   }
 }

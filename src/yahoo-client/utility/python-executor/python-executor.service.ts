@@ -1,5 +1,13 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { normalizePythonError } from './python-error.utils';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  HttpStatus,
+  HttpException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { notFoundExceptionPatterns, rateLimitExceptionPatterns } from '../constants/constants';
+import { normalizePythonError } from '@python-executor/python-error.utils';
 import { exec } from 'child_process';
 
 export class PythonExecutionError extends Error {
@@ -15,15 +23,6 @@ export class PythonExecutionError extends Error {
 export class PythonExecutorService {
   private readonly logger = new Logger(PythonExecutorService.name);
 
-  private static readonly NOT_FOUND_PATTERNS = [
-    'not found',
-    'no price data',
-    'no price data found',
-    'possibly delisted',
-    'delisted',
-    'no data found',
-  ];
-
   async executePythonScript(scriptPath: string, args: string[] = []): Promise<string> {
     const command = `python ${scriptPath} ${args.join(' ')}`;
     const options = {
@@ -38,45 +37,47 @@ export class PythonExecutorService {
       exec(command, options, (error, stdout, stderr) => {
         try {
           const parsed = JSON.parse(stdout);
-          if (parsed && parsed.error) {
-            this.logger.error(`Python script error: ${parsed.error}`);
-            const cleanMsg = normalizePythonError(parsed.error, args[1]);
-            reject(new NotFoundException(cleanMsg));
-            return;
-          }
+          if (parsed && parsed.error && this.classifyAndRejectError(parsed.error, args[1], reject, this.logger)) return;
         } catch (e) {
           this.logger.debug(`Python script output is not JSON. e.message: ${e.message}`);
         }
 
-        if (stderr && !stderr.toLowerCase().includes('futurewarning')) {
-          this.logger.error(`Python script stderr: ${stderr}`);
-          if (PythonExecutorService.NOT_FOUND_PATTERNS.some((pattern) => stderr.includes(pattern))) {
-            const cleanMsg = normalizePythonError(stderr, args[1]);
-            reject(new NotFoundException(cleanMsg));
-            return;
-          }
-          reject(new PythonExecutionError('Python script execution failed', stderr));
+        if (
+          stderr &&
+          !stderr.toLowerCase().includes('futurewarning') &&
+          this.classifyAndRejectError(stderr, args[1], reject, this.logger)
+        ) {
           return;
         }
 
-        if (error) {
-          this.logger.error(`Error executing Python script: ${error.message}`);
-          if (
-            PythonExecutorService.NOT_FOUND_PATTERNS.some((pattern) =>
-              error.message.toLocaleLowerCase().includes(pattern),
-            )
-          ) {
-            const cleanMsg = normalizePythonError(error.message, args[1]);
-            reject(new NotFoundException(cleanMsg));
-            return;
-          }
-          reject(new PythonExecutionError(error.message, stderr));
-          return;
-        }
+        if (error && this.classifyAndRejectError(error.message, args[1], reject, this.logger)) return;
 
         this.logger.debug(`Python script stdout: ${stdout}`);
         resolve(stdout.trim());
       });
     });
   }
+
+  classifyAndRejectError = (
+    rawError: string,
+    context: string,
+    reject: (reason?: any) => void,
+    logger: Logger,
+  ): boolean => {
+    const cleanMsg = normalizePythonError(rawError, context);
+    if (rateLimitExceptionPatterns.some((pattern) => rawError.toLowerCase().includes(pattern))) {
+      logger.warn(`Rate limit error detected: ${rawError}`);
+      reject(new HttpException(cleanMsg, HttpStatus.TOO_MANY_REQUESTS));
+      return true;
+    }
+
+    if (notFoundExceptionPatterns.some((pattern) => rawError.toLowerCase().includes(pattern))) {
+      logger.warn(`Not found error detected: ${rawError}`);
+      reject(new NotFoundException(cleanMsg));
+      return true;
+    }
+    logger.error(`Unhandled error: ${rawError}`);
+    reject(new InternalServerErrorException(cleanMsg));
+    return false;
+  };
 }

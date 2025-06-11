@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StockReport, StockReportDocument } from '../entities/stock-report.schema';
-import { parseDate } from '../../../utility/date-parser/date-parser.utils';
+import { parseDate } from '@utility/date-parser/date-parser.utils';
 
 @Injectable()
 export class StockReportRepository {

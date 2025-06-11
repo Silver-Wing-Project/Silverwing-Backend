@@ -3,8 +3,7 @@ import { BadRequestException, InternalServerErrorException, NotFoundException } 
 import { StockReportService } from '../stock-report.service';
 import { StockReportRepository } from '../repositories/stock-report.repository';
 import { StockReport } from '../entities/stock-report.schema';
-import { parseDate } from '../../../utility/date-parser/date-parser.utils';
-import { errorMessages } from '../../../utility/constants/constants';
+import { errorMessages } from '@utility/constants/constants';
 import { createMockRepository } from './fixtures/mock-repository';
 import { assertStockReport, assertStockReports } from './helpers/assertions';
 import { testErrorHandling } from './helpers/error-handlers';
