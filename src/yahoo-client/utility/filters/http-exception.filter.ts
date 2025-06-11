@@ -20,7 +20,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       typeof exceptionResponse === 'string'
         ? exceptionResponse
         : (exceptionResponse as any).message || exception.message;
-
+    this.logger.error(`Exception: ${message}, stack: ${exception.stack}`, exception.stack);
     this.logger.error(`[${request.method}] ${request.url} - ${message}`, exception.stack);
 
     const errorResponse: any = {

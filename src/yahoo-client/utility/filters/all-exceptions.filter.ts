@@ -7,7 +7,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: any, host: ArgumentsHost) {
     const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
 
@@ -29,7 +29,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message,
     };
 
-    this.logger.error(`unhandled exception: ${message}`, (exception as any)?.stack);
+    this.logger.error(`Exception: ${message}, stack: ${exception.stack}`, exception.stack);
 
     httpAdapter.reply(response, responseBody, status);
   }
