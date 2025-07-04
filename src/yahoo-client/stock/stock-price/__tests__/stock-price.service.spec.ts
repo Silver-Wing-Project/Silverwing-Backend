@@ -106,8 +106,8 @@ describe('StockPriceService Tests', () => {
     });
 
     describe('findManyStockPrices()', () => {
-      const startDate = '2025-01-01';
-      const endDate = '2025-01-10';
+      const startDate = parseDate('2025-01-01');
+      const endDate = parseDate('2025-01-10');
       const mockQuery = {
         ticker: 'AAPL',
         startDate: parseDate(startDate),

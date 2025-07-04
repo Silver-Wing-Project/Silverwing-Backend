@@ -9,12 +9,16 @@ export class PythonService {
     this.scriptPath = path.resolve(process.cwd(), 'src/yahoo-client/utility/python/scripts/data_manager.py');
   }
 
-  async fetchStockData(ticker: string, startDate: string, endDate: string) {
+  async fetchStockData(ticker: string, startDate: Date, endDate: Date) {
+    // Convert Date objects to 'YYYY-MM-DD' strings
+    const start = typeof startDate === 'string' ? startDate : startDate.toISOString().slice(0, 10);
+    const end = typeof endDate === 'string' ? endDate : endDate.toISOString().slice(0, 10);
+
     const stockPricesData = await this.pythonExecutorService.executePythonScript(this.scriptPath, [
       'fetch_stock_prices',
       ticker,
-      startDate,
-      endDate,
+      start,
+      end,
     ]);
 
     if (typeof stockPricesData === 'string') {

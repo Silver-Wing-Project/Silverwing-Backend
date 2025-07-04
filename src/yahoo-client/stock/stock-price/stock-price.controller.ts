@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Query, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, Patch, Delete } from '@nestjs/common';
 import { StockPriceService } from './stock-price.service';
 import { CreateStockPriceDto } from './dto/create-stock-price.dto';
 import { UpdateStockPriceDto } from './dto/update-stock-price.dto';
 import { ApiTags, ApiOperation, ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ObjectIdValidationPipe } from '@utility/pipes/object-validation.pipe';
+import { DateValidationPipe } from '@/yahoo-client/utility/pipes/date-validation.pipe';
 
 @ApiTags('stock-prices')
 @Controller('stock-prices')
@@ -86,9 +88,9 @@ export class StockPriceController {
   @ApiResponse({ status: 404, description: 'Stock prices not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   async findManyStockPrices(
-    @Query('ticker') ticker: string,
-    @Query('startDate') startDate: string,
-    @Query('endDate') endDate: string,
+    @Param('ticker') ticker: string,
+    @Param('startDate', DateValidationPipe) startDate: Date,
+    @Param('endDate', DateValidationPipe) endDate: Date,
   ) {
     return await this.stockPriceService.findManyStockPrices(ticker, startDate, endDate);
   }
@@ -107,7 +109,7 @@ export class StockPriceController {
   })
   @ApiResponse({ status: 404, description: 'Stock price not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async findStockPriceById(@Query('_id') _id: string) {
+  async findStockPriceById(@Param('_id', ObjectIdValidationPipe) _id: string) {
     return await this.stockPriceService.findStockPriceById(_id);
   }
 
@@ -126,7 +128,10 @@ export class StockPriceController {
   })
   @ApiResponse({ status: 404, description: 'Stock price not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async updateStockPrice(@Query('_id') _id: string, @Body() updateStockPriceDto: UpdateStockPriceDto) {
+  async updateStockPrice(
+    @Param('_id', ObjectIdValidationPipe) _id: string,
+    @Body() updateStockPriceDto: UpdateStockPriceDto,
+  ) {
     return await this.stockPriceService.updateStockPrice(_id, updateStockPriceDto);
   }
 
@@ -144,7 +149,7 @@ export class StockPriceController {
   })
   @ApiResponse({ status: 404, description: 'Stock price not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async deleteStockPrice(@Query('_id') _id: string) {
+  async deleteStockPrice(@Param('_id', ObjectIdValidationPipe) _id: string) {
     return await this.stockPriceService.deleteStockPrice(_id);
   }
 

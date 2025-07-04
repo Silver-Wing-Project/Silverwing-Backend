@@ -110,7 +110,7 @@ export class StockPriceService {
    * @throws {NotFoundException} - If no stock prices are found for the given ticker and date range.
    * @throws {InternalServerErrorException} - If an error occurs while finding the stock prices.
    */
-  async findManyStockPrices(ticker: string, startDate: string, endDate: string): Promise<StockPrice[]> {
+  async findManyStockPrices(ticker: string, startDate: Date, endDate: Date): Promise<StockPrice[]> {
     try {
       if (!ticker || !startDate || !endDate) {
         throw new BadRequestException(errorMessages.MISSING_QUERY_PARAMS_PRICE);

@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './yahoo-client/utility/filters/http-exception.filter';
 import { AllExceptionsFilter } from './yahoo-client/utility/filters/all-exceptions.filter';
 import { ConfigService } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,22 @@ async function bootstrap() {
   const httpAdapterHost = app.get(HttpAdapterHost);
 
   app.useGlobalFilters(new HttpExceptionFilter(configService), new AllExceptionsFilter(httpAdapterHost));
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      forbidUnknownValues: true,
+      validationError: {
+        target: false,
+        value: false,
+      },
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
