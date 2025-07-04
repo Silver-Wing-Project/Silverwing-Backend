@@ -1,7 +1,7 @@
 import { IsString, IsDate, IsNumber, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { parseDate } from '@utility/date-parser/date-parser.utils';
+// import { parseDate } from '@utility/date-parser/date-parser.utils';
 
 export class UpdateStockPriceDto {
   @ApiProperty({ description: 'Stock Price ID' })
@@ -47,6 +47,6 @@ export class UpdateStockPriceDto {
 
   constructor(partial: Partial<UpdateStockPriceDto>) {
     Object.assign(this, partial);
-    this.date = parseDate(this.date);
+    // this.date = parseDate(this.date);
   }
 }
