@@ -69,9 +69,9 @@ export class FinanceController {
 
     const parsedStockPricesData = parseStockPricesData(stockPricesData);
     const stockPrices = await this.stockPriceService.createManyStockPrices(parsedStockPricesData);
-    console.log(
-      `Successfully saved ${stockPrices.length} stock prices to the DB. IDs: ${stockPrices.map((p) => p._id).join(', ')}`,
-    );
+    // console.log(
+    //   `Successfully saved ${stockPrices.length} stock prices to the DB. IDs: ${stockPrices.map((p) => p._id).join(', ')}`,
+    // );
     return stockPrices;
   }
 

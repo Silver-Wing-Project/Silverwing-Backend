@@ -52,7 +52,7 @@ export class PythonExecutorService {
 
         if (error && this.classifyAndRejectError(error.message, args[1], reject, this.logger)) return;
 
-        this.logger.debug(`Python script stdout: ${stdout}`);
+        // this.logger.debug(`Python script stdout: ${stdout}`);
         resolve(stdout.trim());
       });
     });

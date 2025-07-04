@@ -18,16 +18,26 @@ import { StockModule } from '@stock/stock.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        const nodeEnv = configService.get<string>('NODE_ENV');
-        const mongodbUri =
-          nodeEnv === 'development'
-            ? configService.get<string>('MONGODB_LOCALHOST_URI')
-            : configService.get<string>('MONGODB_URI');
+        // const nodeEnv = configService.get<string>('NODE_ENV');
+        // console.log(`Current NODE_ENV: ${nodeEnv}`);
+
+        const mongodbUri = configService.get<string>('MONGODB_URI');
+        // console.log(`Using MongoDB URI: ${mongodbUri}`);
 
         if (!mongodbUri) {
           console.error('Error: MongoDB URI is not defined. Check your environment variables.');
           process.exit(1); // Exit the application if the URI is undefined
         }
+
+        // const mongodbUri =
+        //   nodeEnv === 'development'
+        //     ? configService.get<string>('MONGODB_LOCALHOST_URI')
+        //     : configService.get<string>('MONGODB_URI');
+
+        // if (!mongodbUri) {
+        //   console.error('Error: MongoDB URI is not defined. Check your environment variables.');
+        //   process.exit(1); // Exit the application if the URI is undefined
+        // }
 
         return { uri: mongodbUri };
       },
