@@ -59,5 +59,8 @@ __pycache__
 .github/pull_request_template.md
 .github/PR_DESCRIPTION.md
 
+# Database utilities (optional)
+/src/database-util/*
+
 # Shell scripts
 *.sh
