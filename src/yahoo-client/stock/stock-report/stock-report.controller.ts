@@ -4,6 +4,7 @@ import { CreateStockReportDto } from './dto/create-stock-report.dto';
 import { UpdateStockReportDto } from './dto/update-stock-report.dto';
 import { ApiTags, ApiOperation, ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { AllExceptionsFilter } from '@utility/filters/all-exceptions.filter';
+import { ObjectIdValidationPipe } from '@utility/pipes/object-validation.pipe';
 
 @ApiTags('stock-reports')
 @Controller('stock-reports')
@@ -56,7 +57,7 @@ export class StockReportController {
   @ApiResponse({ status: 200, description: 'The stock report has been successfully fetched.' })
   @ApiResponse({ status: 404, description: 'Stock report not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async findStockReportById(@Query('_id') _id: string) {
+  async findStockReportById(@Query('_id', ObjectIdValidationPipe) _id: string) {
     return await this.stockReportService.findStockReportById(_id);
   }
 
@@ -67,7 +68,10 @@ export class StockReportController {
   @ApiResponse({ status: 200, description: 'The stock report has been successfully updated.' })
   @ApiResponse({ status: 404, description: 'Stock report not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async updateStockReport(@Query('_id') _id: string, @Body() updateStockReportDto: UpdateStockReportDto) {
+  async updateStockReport(
+    @Query('_id', ObjectIdValidationPipe) _id: string,
+    @Body() updateStockReportDto: UpdateStockReportDto,
+  ) {
     return await this.stockReportService.updateStockReport(_id, updateStockReportDto);
   }
 
@@ -77,7 +81,7 @@ export class StockReportController {
   @ApiResponse({ status: 200, description: 'The stock report has been successfully deleted.' })
   @ApiResponse({ status: 404, description: 'Stock report not found.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async deleteStockReport(@Query('_id') _id: string) {
+  async deleteStockReport(@Query('_id', ObjectIdValidationPipe) _id: string) {
     return await this.stockReportService.deleteStockReport(_id);
   }
 

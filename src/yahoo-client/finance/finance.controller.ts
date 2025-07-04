@@ -8,6 +8,7 @@ import { StockPriceService } from '@stock/stock-price/stock-price.service';
 import { StockPrice } from '@stock/stock-price/entities/stock-price.schema';
 import { StockReport } from '@stock/stock-report/entities/stock-report.schema';
 import { parseStockPricesData, parseStockReportsData } from '@utility/data-parsers/data-parser.utils';
+import { DateValidationPipe } from '../utility/pipes/date-validation.pipe';
 
 @ApiTags('Finance')
 @Controller('finance')
@@ -52,8 +53,8 @@ export class FinanceController {
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   async fetchStockPrices(
     @Param('ticker') ticker: string,
-    @Query('startDate') startDate: string,
-    @Query('endDate') endDate: string,
+    @Query('startDate', DateValidationPipe) startDate: Date,
+    @Query('endDate', DateValidationPipe) endDate: Date,
   ): Promise<StockPrice[]> {
     const existingPrices = await this.stockPriceService.findManyStockPrices(ticker, startDate, endDate);
     if (existingPrices.length > 0) {
@@ -68,6 +69,9 @@ export class FinanceController {
 
     const parsedStockPricesData = parseStockPricesData(stockPricesData);
     const stockPrices = await this.stockPriceService.createManyStockPrices(parsedStockPricesData);
+    console.log(
+      `Successfully saved ${stockPrices.length} stock prices to the DB. IDs: ${stockPrices.map((p) => p._id).join(', ')}`,
+    );
     return stockPrices;
   }
 
