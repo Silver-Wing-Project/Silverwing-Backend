@@ -44,7 +44,7 @@ export class DateRangeService {
   /**
    * Groups consecutive dates into ranges.
    * @param dates - An array of dates to group.
-   * @returns
+   * @returns An array of objects representing the start and end of each grouped date range.
    */
   groupConsecutiveDates(dates: Date[]): { start: Date; end: Date }[] {
     if (!Array.isArray(dates) || dates.length === 0) return [];
