@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PythonExecutorService } from '@python-executor/python-executor.service';
+import { formatDateToString } from '@utility/date-parser/date-parser.utils';
 import * as path from 'path';
 
 @Injectable()
@@ -10,9 +11,8 @@ export class PythonService {
   }
 
   async fetchStockData(ticker: string, startDate: Date, endDate: Date) {
-    // Convert Date objects to 'YYYY-MM-DD' strings
-    const start = typeof startDate === 'string' ? startDate : startDate.toISOString().slice(0, 10);
-    const end = typeof endDate === 'string' ? endDate : endDate.toISOString().slice(0, 10);
+    const start = formatDateToString(startDate);
+    const end = formatDateToString(endDate);
 
     const stockPricesData = await this.pythonExecutorService.executePythonScript(this.scriptPath, [
       'fetch_stock_prices',
