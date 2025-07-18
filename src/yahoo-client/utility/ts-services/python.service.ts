@@ -1,18 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { PythonExecutorService } from '@python-executor/python-executor.service';
+import { formatDateToString } from '@utility/date-parser/date-parser.utils';
 import * as path from 'path';
 
 @Injectable()
 export class PythonService {
+  private readonly logger = new Logger(PythonService.name);
   scriptPath: string;
   constructor(private pythonExecutorService: PythonExecutorService) {
     this.scriptPath = path.resolve(process.cwd(), 'src/yahoo-client/utility/python/scripts/data_manager.py');
   }
 
   async fetchStockData(ticker: string, startDate: Date, endDate: Date) {
-    // Convert Date objects to 'YYYY-MM-DD' strings
-    const start = typeof startDate === 'string' ? startDate : startDate.toISOString().slice(0, 10);
-    const end = typeof endDate === 'string' ? endDate : endDate.toISOString().slice(0, 10);
+    const start = formatDateToString(startDate);
+    const end = formatDateToString(endDate);
+
+    this.logger.log(`Fetching stock data for ${ticker} from ${start} to ${end}`);
 
     const stockPricesData = await this.pythonExecutorService.executePythonScript(this.scriptPath, [
       'fetch_stock_prices',
@@ -29,7 +32,7 @@ export class PythonService {
         }
       } catch (e) {
         // stdout is not JSON, continue
-        console.log(`Python script output is not JSON. e.message: ${e.message}`);
+        this.logger.debug(`Python script output is not JSON. e.message: ${e.message}`);
       }
     }
 
@@ -40,6 +43,8 @@ export class PythonService {
   }
 
   async fetchStockReports(ticker: string, reportType: string) {
+    this.logger.log(`Fetching stock reports for ${ticker} of type ${reportType}`);
+
     const stockReportsData = await this.pythonExecutorService.executePythonScript(this.scriptPath, [
       'fetch_financial_reports',
       ticker,

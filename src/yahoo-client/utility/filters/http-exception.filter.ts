@@ -1,6 +1,7 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { formatDateToString } from '@date-parser/date-parser.utils';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -25,7 +26,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const errorResponse: any = {
       statusCode: status,
-      timestamp: new Date().toISOString(),
+      timestamp: formatDateToString(new Date()),
       path: request.url,
       message,
     };

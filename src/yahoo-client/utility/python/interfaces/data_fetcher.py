@@ -1,5 +1,5 @@
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict
 import json
 import os
@@ -25,7 +25,8 @@ class DataFetcher:
         """
         try:
             stock = yf.Ticker(ticker)
-            df = stock.history(start=start_date, end=end_date)
+            adjusted_end_date = end_date + timedelta(days=1)
+            df = stock.history(start=start_date, end=adjusted_end_date)
 
             if df.empty:
                 error_message = json.dumps({'error': f"No price data found for ticker '{ticker}' in the given date range."})

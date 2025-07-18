@@ -10,36 +10,27 @@ import { StockModule } from '@stock/stock.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [
-        `.env.${process.env.NODE_ENV || 'development'}`, // Use environment-specific file
-        '.env', // Fallback to default .env file
-      ],
+      envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'],
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        // const nodeEnv = configService.get<string>('NODE_ENV');
-        // console.log(`Current NODE_ENV: ${nodeEnv}`);
-
+        const nodeEnv = configService.get<string>('NODE_ENV') || 'development';
         const mongodbUri = configService.get<string>('MONGODB_URI');
-        // console.log(`Using MongoDB URI: ${mongodbUri}`);
+
+        console.log(`Environment: ${nodeEnv}`);
+        console.log(`MongoDB URI: ${mongodbUri}`);
 
         if (!mongodbUri) {
-          console.error('Error: MongoDB URI is not defined. Check your environment variables.');
-          process.exit(1); // Exit the application if the URI is undefined
+          console.error('MONGODB_URI is not defined in environment variables');
+          process.exit(1);
         }
 
-        // const mongodbUri =
-        //   nodeEnv === 'development'
-        //     ? configService.get<string>('MONGODB_LOCALHOST_URI')
-        //     : configService.get<string>('MONGODB_URI');
-
-        // if (!mongodbUri) {
-        //   console.error('Error: MongoDB URI is not defined. Check your environment variables.');
-        //   process.exit(1); // Exit the application if the URI is undefined
-        // }
-
-        return { uri: mongodbUri };
+        return {
+          uri: mongodbUri,
+          retryWrites: true,
+          w: 'majority',
+        };
       },
       inject: [ConfigService],
     }),
