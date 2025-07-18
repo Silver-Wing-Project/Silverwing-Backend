@@ -29,6 +29,12 @@
       "@python/*": ["./src/yahoo-client/utility/python/*"],
       "@python-executor/*": ["./src/yahoo-client/utility/python-executor/*"],
       "@ts-services/*": ["./src/yahoo-client/utility/ts-services/*"],
+      "@data-completeness/*": ["./src/yahoo-client/utility/ts-services/data-completeness/*"],
+      "@date-range/*": ["./src/yahoo-client/utility/ts-services/date-range/*"],
+      "@stock-data-orchestration/*": ["./src/yahoo-client/utility/ts-services/stock-data-orchestration/*"],
+      "@data-parsers/*": ["./src/yahoo-client/utility/data-parsers/*"],
+      "@date-parser/*": ["./src/yahoo-client/utility/date-parser/*"],
+      "@pipes/*": ["./src/yahoo-client/utility/pipes/*"]
     }
   }
 }
