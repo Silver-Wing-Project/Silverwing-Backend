@@ -1,77 +1,93 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { IDateRangeService } from './interfaces/date-range.interface';
+import { formatDateToString } from '@utility/date-parser/date-parser.utils';
 
 @Injectable()
-export class DateRangeService {
-  /**
-   * Generated an array of dates between the start and end dates(inclusive).
-   * @param startDate - The start date.
-   * @param endDate - The end date.
-   * @returns An array of dates between the start and end dates.
-   * @throws Exception if the start date is after the end date.
-   */
-  generateDateRange(startDate: Date, endDate: Date): Date[] {
-    if (startDate > endDate) throw new Error('Start date cannot be after end date');
+export class DateRangeService implements IDateRangeService {
+  private readonly logger = new Logger(DateRangeService.name);
 
-    const dateArray: Date[] = [];
+  generateBusinessDays(startDate: Date, endDate: Date): Date[] {
+    this.validateDateRange(startDate, endDate);
+
+    const businessDays: Date[] = [];
     const currentDate = new Date(startDate);
 
     while (currentDate <= endDate) {
-      dateArray.push(new Date(currentDate));
+      if (this.isBusinessDay(currentDate)) {
+        businessDays.push(new Date(currentDate));
+      }
       currentDate.setDate(currentDate.getDate() + 1);
     }
-    return dateArray;
+    // this.logger.debug(
+    //   `Generated ${businessDays.length} business days from ${formatDateToString(startDate)} to ${formatDateToString(endDate)}`,
+    // );
+    return businessDays;
   }
 
-  /**
-   * Finds missing dates by comparing requested range with existing range.
-   * @param requestedRange - The requested date range.
-   * @param existingRange - The existing date range.
-   * @returns An array of missing dates.
-   * @throws Exception if the requested range is not an array or if the existing range is
-   */
-  findMissingDates(requestedRange: Date[], existingRange: Date[]): Date[] {
-    if (!Array.isArray(requestedRange) || !Array.isArray(existingRange))
-      throw new Error('One or both ranges are not arrays');
+  findMissingDates(requestedDates: Date[], existingDates: Date[]): Date[] {
+    this.validateDateArrays(requestedDates, existingDates);
 
-    const existingDateStrings = existingRange.map((date) => date.toISOString().split('T')[0]);
-
-    return requestedRange.filter((date) => {
-      const dateString = date.toISOString().split('T')[0];
-      return !existingDateStrings.includes(dateString);
+    const existingDateStrings = existingDates.map((date) => formatDateToString(date));
+    const missingDates = requestedDates.filter((date) => {
+      return !existingDateStrings.includes(formatDateToString(date));
     });
+
+    // this.logger.debug(`Found ${missingDates.length} missing dates from requested dates`);
+    return missingDates;
   }
 
-  /**
-   * Groups consecutive dates into ranges.
-   * @param dates - An array of dates to group.
-   * @returns An array of objects representing the start and end of each grouped date range.
-   */
-  groupConsecutiveDates(dates: Date[]): { start: Date; end: Date }[] {
+  groupConsecutiveDates(dates: Date[]): { startDate: Date; endDate: Date }[] {
     if (!Array.isArray(dates) || dates.length === 0) return [];
 
-    const sortedDates = dates.sort((a, b) => a.getTime() - b.getTime());
-    const groupedRanges: { start: Date; end: Date }[] = [];
+    const sortedDates = [...dates].sort((a, b) => a.getTime() - b.getTime());
+    const ranges: { startDate: Date; endDate: Date }[] = [];
+
     let rangeStart = sortedDates[0];
     let rangeEnd = sortedDates[0];
 
     for (let i = 1; i < sortedDates.length; i++) {
-      const currentDate = sortedDates[i];
-      const previousDate = sortedDates[i - 1];
-
-      // Check if dates are consecutive (accounting for weekends)
-      const dayDiff = (currentDate.getTime() - previousDate.getTime()) / (1000 * 60 * 60 * 24);
-      if (dayDiff <= 3) {
-        rangeEnd = currentDate;
+      if (this.isConsecutiveBusinessDay(sortedDates[i - 1], sortedDates[i])) {
+        rangeEnd = sortedDates[i];
       } else {
-        groupedRanges.push({ start: rangeStart, end: rangeEnd });
-        rangeStart = currentDate;
-        rangeEnd = currentDate;
+        ranges.push({ startDate: rangeStart, endDate: rangeEnd });
+        rangeStart = sortedDates[i];
+        rangeEnd = sortedDates[i];
       }
     }
 
-    // Push the last range
-    groupedRanges.push({ start: rangeStart, end: rangeEnd });
+    ranges.push({ startDate: rangeStart, endDate: rangeEnd });
+    // this.logger.debug(`Grouped ${dates.length} dates into ${ranges.length} consecutive ranges`);
+    return ranges;
+  }
 
-    return groupedRanges;
+  private isConsecutiveBusinessDay(date1: Date, date2: Date): boolean {
+    const nextBusinessDay = this.getNextBusinessDay(date1);
+    return formatDateToString(nextBusinessDay) === formatDateToString(date2);
+  }
+
+  private getNextBusinessDay(date: Date): Date {
+    const nextDay = new Date(date);
+    do {
+      nextDay.setDate(nextDay.getDate() + 1);
+    } while (nextDay.getDay() === 0 || nextDay.getDay() === 6); // Skip weekends
+
+    return nextDay;
+  }
+
+  private isBusinessDay(date: Date): boolean {
+    const dayOfWeek = date.getDay();
+    return dayOfWeek >= 1 && dayOfWeek <= 5; // Monday to Friday
+  }
+
+  private validateDateRange(startDate: Date, endDate: Date): void {
+    if (startDate > endDate) {
+      throw new Error('Start date cannot be after end date');
+    }
+  }
+
+  private validateDateArrays(requestedDates: Date[], existingDates: Date[]): void {
+    if (!Array.isArray(requestedDates) || !Array.isArray(existingDates)) {
+      throw new Error('Both requested and existing dates must be arrays');
+    }
   }
 }
