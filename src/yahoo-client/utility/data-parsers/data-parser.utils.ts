@@ -1,7 +1,7 @@
-import { CreateStockPriceDto } from '../../stock/stock-price/dto/create-stock-price.dto';
-import { CreateStockReportDto } from '../../stock/stock-report/dto/create-stock-report.dto';
+import { CreateStockPriceDto } from '@stock-price/dto/create-stock-price.dto';
+import { CreateStockReportDto } from '@stock/stock-report/dto/create-stock-report.dto';
 import mongoose from 'mongoose';
-import { parseDate } from '../date-parser/date-parser.utils';
+import { parseDate } from '@date-parser/date-parser.utils';
 
 export function parseStockPricesData(stockPricesData: any[]): CreateStockPriceDto[] {
   return stockPricesData.map((data: any) => ({
