@@ -10,7 +10,7 @@ import { CreateStockPriceDto } from './dto/create-stock-price.dto';
 import { UpdateStockPriceDto } from './dto/update-stock-price.dto';
 import { StockPrice } from './entities/stock-price.schema';
 import { plainToClass } from 'class-transformer';
-import { parseDate } from '@utility/date-parser/date-parser.utils';
+import { formatDateToString, parseDate } from '@utility/date-parser/date-parser.utils';
 import { errorMessages } from '@utility/constants/constants';
 import { ServiceErrorHandler } from '../utils/service-error.handler';
 
@@ -117,7 +117,7 @@ export class StockPriceService {
       }
 
       this.logger.log(
-        `Finding multiple stock prices with ticker: ${ticker}, startDate: ${startDate}, endDate: ${endDate}`,
+        `Finding multiple stock prices with ticker: ${ticker}, startDate: ${formatDateToString(startDate)}, endDate: ${formatDateToString(endDate)}`,
       );
 
       const existingPrices = await this.stockPriceRepository.findMany({
@@ -128,9 +128,19 @@ export class StockPriceService {
         },
       });
 
-      if (!existingPrices) {
-        throw new NotFoundException(errorMessages.FAILED_TO_GET_MANY_STOCK_PRICES);
+      // Return empty array instead of throwing error - let orchestration service handle completeness
+      if (!existingPrices || existingPrices.length === 0) {
+        this.logger.log(`No existing stock prices found for ${ticker}`);
+        return [];
       }
+
+      this.logger.log(
+        `Found ${existingPrices.length} stock prices for ticker ${ticker} between ${startDate} and ${endDate}`,
+      );
+
+      // if (!existingPrices) {
+      //   throw new NotFoundException(errorMessages.FAILED_TO_GET_MANY_STOCK_PRICES);
+      // }
       return existingPrices;
     } catch (error) {
       return this.serviceErrorHandler.handleBusinessError(
