@@ -24,19 +24,19 @@ export class FinanceController {
     private readonly stockDataOrchestrationService: StockDataOrchestrationService,
   ) {}
 
-  @Get('fetch-stock-prices/:ticker')
+  @Get('fetch-stock-prices/:ticker/:startDate/:endDate')
   @ApiOperation({ summary: 'Fetch stock prices for a given ticker and date range' })
   @ApiParam({ name: 'ticker', type: String, description: 'Stock Ticker', example: 'AAPL', required: true })
-  @ApiQuery({ name: 'startDate', type: String, description: 'Start Date', example: '2024-01-01', required: true })
-  @ApiQuery({ name: 'endDate', type: String, description: 'End Date', example: '2024-01-31', required: true })
+  @ApiParam({ name: 'startDate', type: String, description: 'Start Date', example: '2024-01-01', required: true })
+  @ApiParam({ name: 'endDate', type: String, description: 'End Date', example: '2024-01-31', required: true })
   @ApiResponse({ status: 200, description: 'The stock prices have been successfully fetched.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 404, description: 'Stock prices not found or invalid stock ticker' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   async fetchStockPrices(
     @Param('ticker') ticker: string,
-    @Query('startDate', DateValidationPipe) startDate: Date,
-    @Query('endDate', DateValidationPipe) endDate: Date,
+    @Param('startDate', DateValidationPipe) startDate: Date,
+    @Param('endDate', DateValidationPipe) endDate: Date,
   ): Promise<StockPrice[]> {
     this.logger.log(
       `Fetching stock prices for ${ticker} from ${formatDateToString(startDate)} to ${formatDateToString(endDate)}`,
@@ -73,16 +73,16 @@ export class FinanceController {
     }
   }
 
-  @Get('fetch-stock-reports/:ticker')
+  @Get('fetch-stock-reports/:ticker/:reportType')
   @ApiOperation({ summary: 'Fetch stock reports for a given ticker and report type' })
   @ApiParam({ name: 'ticker', type: String, description: 'Stock Ticker', example: 'AAPL', required: true })
-  @ApiQuery({ name: 'reportType', type: String, description: 'Report Type', example: 'financials', required: true })
+  @ApiParam({ name: 'reportType', type: String, description: 'Report Type', example: 'financials', required: true })
   @ApiResponse({ status: 200, description: 'Stock reports have been successfully fetched.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   async fetchStockReports(
     @Param('ticker') ticker: string,
-    @Query('reportType') reportType: string,
+    @Param('reportType') reportType: string,
   ): Promise<StockReport[]> {
     const existingReports = await this.stockReportService.findManyStockReports(ticker, reportType);
     if (existingReports.length > 0) {
