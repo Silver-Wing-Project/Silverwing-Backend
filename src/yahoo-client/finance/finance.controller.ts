@@ -1,6 +1,6 @@
-import { Controller, Get, InternalServerErrorException, Query, Param, Logger } from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException, Param, Logger } from '@nestjs/common';
 
-import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { PythonService } from '@utility/ts-services/python.service';
 import { StockReportService } from '@stock/stock-report/stock-report.service';
