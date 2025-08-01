@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { StockPriceRepository } from './repositories/stock-price.repository';
 import { CreateStockPriceDto } from './dto/create-stock-price.dto';
-import { UpdateStockPriceDto } from './dto/update-stock-price.dto';
 import { StockPrice } from './entities/stock-price.schema';
 import { plainToClass } from 'class-transformer';
 import { formatDateToString, parseDate } from '@utility/date-parser/date-parser.utils';
@@ -180,77 +179,6 @@ export class StockPriceService {
         default:
           throw new InternalServerErrorException(errorMessages.FAILED_TO_GET_STOCK_PRICE_BY_ID);
       }
-    }
-  }
-
-  /**
-   * Updates the stock price for a given stock ID.
-   *
-   * @param _id - The ID of the stock to update.
-   * @param updateStockPriceDto - The data transfer object containing the updated stock price information.
-   * @returns A promise that resolves to the updated StockPrice object.
-   * @throws {BadRequestException} If the _id or updateStockPriceDto is missing.
-   * @throws {InternalServerErrorException} If an error occurs while updating the stock price.
-   */
-  async updateStockPrice(_id: string, updateStockPriceDto: UpdateStockPriceDto): Promise<StockPrice> {
-    try {
-      if (!_id || !updateStockPriceDto) throw new BadRequestException(errorMessages.MISSING_UPDATE_STOCK_PRICE_DTO);
-
-      const stockPrice = plainToClass(StockPrice, updateStockPriceDto);
-      this.logger.log(`Updating stock price with ID ${_id}`, JSON.stringify(stockPrice));
-      return await this.stockPriceRepository.update(_id, stockPrice);
-    } catch (error) {
-      this.logger.error(`Error updating stock price with ID ${_id}`, error.stack);
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(errorMessages.FAILED_TO_UPDATE_STOCK_PRICE);
-    }
-  }
-
-  /**
-   * Deletes a stock price entry from the repository by its ID.
-   *
-   * @param _id - The ID of the stock price to delete.
-   * @returns A promise that resolves to the deleted StockPrice object.
-   * @throws {BadRequestException} If the _id parameter is missing.
-   * @throws {InternalServerErrorException} If an error occurs during deletion.
-   */
-  async deleteStockPrice(_id: string): Promise<StockPrice> {
-    try {
-      if (!_id) throw new BadRequestException(errorMessages.MISSING_ID_PARAM);
-
-      this.logger.log(`Deleting stock price with ID ${_id}`);
-      return await this.stockPriceRepository.delete(_id);
-    } catch (error) {
-      this.logger.error(`Error deleting stock price with ID ${_id}`, error.stack);
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(errorMessages.FAILED_TO_DELETE_STOCK_PRICE);
-    }
-  }
-
-  /**
-   * Deletes multiple stock prices based on the provided IDs.
-   *
-   * @param {string[]} ids - An array of stock price IDs to be deleted.
-   * @returns {Promise<any>} A promise that resolves when the deletion is complete.
-   * @throws {BadRequestException} If the `ids` parameter is missing or empty.
-   * @throws {InternalServerErrorException} If an error occurs during the deletion process.
-   */
-  async deleteManyStockPrices(ids: string[]): Promise<any> {
-    try {
-      if (!ids || ids.length === 0) throw new BadRequestException(errorMessages.MISSING_IDS_PARAM);
-
-      this.logger.log(`Deleting stock prices with IDs ${ids}`);
-      return await this.stockPriceRepository.deleteMany(ids);
-    } catch (error) {
-      this.logger.error(`Error deleting stock prices with IDs ${ids}`, error.stack);
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(errorMessages.FAILED_TO_DELETE_MANY_STOCK_PRICES);
     }
   }
 }
