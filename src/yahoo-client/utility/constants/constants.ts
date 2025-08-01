@@ -34,6 +34,15 @@ export const errorMessages = {
   MISSING_UPDATE_STOCK_REPORT_DTO: 'Missing required body parameter: updateStockReportDto or _id',
 };
 
+export const validationMessages = {
+  INVALID_TICKER: 'Ticker is required and cannot be empty',
+  INVALID_TICKER_FORMAT: 'Invalid ticker format',
+  TICKER_TOO_LONG: 'Ticker symbol too long',
+  INVALID_DATE_RANGE: 'Start date cannot be after end date',
+  FUTURE_END_DATE: 'End date cannot be in the future',
+  MISSING_DATES: 'Both startDate and endDate are required',
+};
+
 export const notFoundExceptionPatterns = [
   'not found',
   'no price data',
