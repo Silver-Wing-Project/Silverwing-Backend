@@ -7,6 +7,7 @@ import {
 } from './interfaces/stock-data-orchestration.interface';
 import { DataCompletenessService } from '@data-completeness/data-completeness.service';
 import { formatDateToString } from '@date-parser/date-parser.utils';
+import { TickerValidator } from '@validators/ticker.validator';
 
 @Injectable()
 export class StockDataOrchestrationService implements IStockDataOrchestrationService {
@@ -50,9 +51,7 @@ export class StockDataOrchestrationService implements IStockDataOrchestrationSer
   private validateRequest(request: StockDataRequest): void {
     const { ticker, startDate, endDate } = request;
 
-    if (!ticker?.trim()) {
-      throw new BadRequestException('Ticker is required and cannot be empty');
-    }
+    TickerValidator.validate(ticker);
 
     if (!startDate || !endDate) {
       throw new BadRequestException('Both startDate and endDate are required');

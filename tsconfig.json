@@ -34,7 +34,8 @@
       "@stock-data-orchestration/*": ["./src/yahoo-client/utility/ts-services/stock-data-orchestration/*"],
       "@data-parsers/*": ["./src/yahoo-client/utility/data-parsers/*"],
       "@date-parser/*": ["./src/yahoo-client/utility/date-parser/*"],
-      "@pipes/*": ["./src/yahoo-client/utility/pipes/*"]
+      "@pipes/*": ["./src/yahoo-client/utility/pipes/*"],
+      "@validators/*": ["./src/yahoo-client/utility/validators/*"]
     }
   }
 }
