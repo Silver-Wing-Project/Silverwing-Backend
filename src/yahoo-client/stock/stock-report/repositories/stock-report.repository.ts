@@ -69,36 +69,4 @@ export class StockReportRepository {
   async findOne(id: string): Promise<StockReport> {
     return this.stockReportModel.findById(id).exec();
   }
-
-  /**
-   * Updates an existing stock report by its ID.
-   *
-   * @param id - The unique identifier of the stock report to update.
-   * @param stockReport - The new data for the stock report.
-   * @returns A promise that resolves to the updated stock report.
-   */
-  async update(id: string, stockReport: StockReport): Promise<StockReport> {
-    stockReport.date = parseDate(stockReport.date);
-    return this.stockReportModel.findByIdAndUpdate(id, stockReport, { new: true }).exec();
-  }
-
-  /**
-   * Deletes a stock report by its ID.
-   *
-   * @param {string} id - The ID of the stock report to delete.
-   * @returns {Promise<any>} A promise that resolves when the stock report is deleted.
-   */
-  async delete(id: string): Promise<any> {
-    return this.stockReportModel.findByIdAndDelete(id).exec();
-  }
-
-  /**
-   * Deletes multiple stock reports from the database.
-   *
-   * @param {string[]} ids - An array of stock report IDs to be deleted.
-   * @returns {Promise<any>} A promise that resolves when the deletion is complete.
-   */
-  async deleteMany(ids: string[]): Promise<any> {
-    return this.stockReportModel.deleteMany({ _id: { $in: ids } }).exec();
-  }
 }
