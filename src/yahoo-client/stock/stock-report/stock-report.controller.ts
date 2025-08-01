@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Query, Patch, Delete, UseFilters } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, UseFilters } from '@nestjs/common';
 import { StockReportService } from './stock-report.service';
 import { CreateStockReportDto } from './dto/create-stock-report.dto';
-import { UpdateStockReportDto } from './dto/update-stock-report.dto';
 import { ApiTags, ApiOperation, ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { AllExceptionsFilter } from '@utility/filters/all-exceptions.filter';
 import { ObjectIdValidationPipe } from '@utility/pipes/object-validation.pipe';
@@ -59,39 +58,5 @@ export class StockReportController {
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   async findStockReportById(@Query('_id', ObjectIdValidationPipe) _id: string) {
     return await this.stockReportService.findStockReportById(_id);
-  }
-
-  @Patch('report/:_id')
-  @ApiOperation({ summary: 'Update a stock report by ID' })
-  @ApiBody({ type: UpdateStockReportDto })
-  @ApiParam({ name: '_id', type: String, description: 'Stock Report ID', required: true })
-  @ApiResponse({ status: 200, description: 'The stock report has been successfully updated.' })
-  @ApiResponse({ status: 404, description: 'Stock report not found.' })
-  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async updateStockReport(
-    @Query('_id', ObjectIdValidationPipe) _id: string,
-    @Body() updateStockReportDto: UpdateStockReportDto,
-  ) {
-    return await this.stockReportService.updateStockReport(_id, updateStockReportDto);
-  }
-
-  @Delete('report/:_id')
-  @ApiOperation({ summary: 'Delete a stock report by ID' })
-  @ApiParam({ name: '_id', type: String, description: 'Stock Report ID', required: true })
-  @ApiResponse({ status: 200, description: 'The stock report has been successfully deleted.' })
-  @ApiResponse({ status: 404, description: 'Stock report not found.' })
-  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async deleteStockReport(@Query('_id', ObjectIdValidationPipe) _id: string) {
-    return await this.stockReportService.deleteStockReport(_id);
-  }
-
-  @Delete('reports/:ids')
-  @ApiOperation({ summary: 'Delete multiple stock reports by ID' })
-  @ApiParam({ name: 'ids', type: String, description: 'Stock Report IDs', required: true })
-  @ApiResponse({ status: 200, description: 'The stock reports have been successfully deleted.' })
-  @ApiResponse({ status: 404, description: 'Stock reports not found.' })
-  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async deleteManyStockReports(@Query('ids') ids: string[]) {
-    return await this.stockReportService.deleteManyStockReports(ids);
   }
 }
