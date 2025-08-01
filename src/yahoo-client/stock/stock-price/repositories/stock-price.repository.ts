@@ -69,36 +69,4 @@ export class StockPriceRepository {
   async findOne(id: string): Promise<StockPrice> {
     return this.stockPriceModel.findById(id).exec();
   }
-
-  /**
-   * Updates the stock price document with the given ID.
-   *
-   * @param id - The ID of the stock price document to update.
-   * @param stockPrice - The new stock price data to update the document with.
-   * @returns A promise that resolves to the updated stock price document.
-   */
-  async update(id: string, stockPrice: StockPrice): Promise<StockPrice> {
-    stockPrice.date = parseDate(stockPrice.date);
-    return this.stockPriceModel.findByIdAndUpdate(id, stockPrice, { new: true }).exec();
-  }
-
-  /**
-   * Deletes a stock price entry by its ID.
-   *
-   * @param {string} id - The ID of the stock price entry to delete.
-   * @returns {Promise<StockPrice>} A promise that resolves to the deleted stock price entry.
-   */
-  async delete(id: string): Promise<StockPrice> {
-    return this.stockPriceModel.findByIdAndDelete(id).exec();
-  }
-
-  /**
-   * Deletes multiple stock price records from the database.
-   *
-   * @param {string[]} ids - An array of stock price record IDs to be deleted.
-   * @returns {Promise<any>} A promise that resolves when the deletion operation is complete.
-   */
-  async deleteMany(ids: string[]): Promise<any> {
-    return this.stockPriceModel.deleteMany({ _id: { $in: ids } }).exec();
-  }
 }
