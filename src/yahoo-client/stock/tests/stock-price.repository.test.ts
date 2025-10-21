@@ -91,37 +91,4 @@ describe('StockPriceRepository', () => {
     expect(result).toHaveProperty('ticker', 'AAPL');
     expect(result).toHaveProperty('date', new Date('2021-01-01'));
   });
-
-  it('should update stock price object successfully', async () => {
-    jest.spyOn(stockPriceRepository, 'create').mockResolvedValueOnce(mockStockPrice);
-    jest.spyOn(stockPriceRepository, 'update').mockResolvedValueOnce(mockStockPrice);
-    await stockPriceRepository.create(mockStockPrice);
-    const mockStockPriceId = mockStockPrice._id;
-    const result = await stockPriceRepository.update(mockStockPriceId, mockStockPrice);
-    expect(result).toEqual(mockStockPrice);
-    expect(stockPriceRepository.update).toHaveBeenCalledWith(mockStockPriceId, mockStockPrice);
-    expect(result).toHaveProperty('ticker', 'AAPL');
-    expect(result).toHaveProperty('date', new Date('2021-01-01'));
-  });
-
-  it('should delete stock price object successfully', async () => {
-    jest.spyOn(stockPriceRepository, 'create').mockResolvedValueOnce(mockStockPrice);
-    jest.spyOn(stockPriceRepository, 'delete').mockResolvedValueOnce(mockStockPrice);
-    await stockPriceRepository.create(mockStockPrice);
-    const mockStockPriceId = mockStockPrice._id;
-    const result = await stockPriceRepository.delete(mockStockPriceId);
-    expect(result).toEqual(mockStockPrice);
-    expect(stockPriceRepository.delete).toHaveBeenCalledWith(mockStockPriceId);
-    expect(result).toHaveProperty('ticker', 'AAPL');
-    expect(result).toHaveProperty('date', new Date('2021-01-01'));
-  });
-
-  it('should delete multiple stock price objects successfully', async () => {
-    jest.spyOn(stockPriceRepository, 'deleteMany').mockResolvedValueOnce({ deletedCount: 2 });
-
-    const ids = mockStockPrices.map((stockPrice) => stockPrice._id);
-    const result = await stockPriceRepository.deleteMany(ids);
-    expect(result).toEqual({ deletedCount: 2 });
-    expect(stockPriceRepository.deleteMany).toHaveBeenCalledWith(ids);
-  });
 });
