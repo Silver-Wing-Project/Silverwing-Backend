@@ -2,6 +2,12 @@ import json
 import os
 import sys
 from datetime import datetime
+
+# Add parent directory to Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+
 from interfaces.IFinanceClient import IFinanceClient
 from common.utils import DateTimeEncoder
 
