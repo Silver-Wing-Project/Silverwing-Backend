@@ -50,6 +50,19 @@ export class PythonService {
       ticker,
       reportType,
     ]);
-    return JSON.parse(stockReportsData);
+
+    // console.log(stockReportsData);
+    const firstJsonObject = stockReportsData.split('\n')[0];
+
+    try {
+      const parsed = JSON.parse(firstJsonObject);
+      if (parsed && parsed.error) {
+        throw new NotFoundException(`(pythonService)Python script error: ${parsed.error}`);
+      }
+      return parsed;
+    } catch (e) {
+      this.logger.error(`Error parsing Python script output: ${e.message}`);
+      throw new NotFoundException(`Error parsing Python script output: ${e.message}`);
+    }
   }
 }
