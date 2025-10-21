@@ -84,10 +84,10 @@ export class FinanceController {
     @Param('ticker') ticker: string,
     @Param('reportType') reportType: string,
   ): Promise<StockReport[]> {
-    const existingReports = await this.stockReportService.findManyStockReports(ticker, reportType);
-    if (existingReports.length > 0) {
-      return existingReports;
-    }
+    // const existingReports = await this.stockReportService.findManyStockReports(ticker, reportType);
+    // if (existingReports.length > 0) {
+    //   return existingReports;
+    // }
 
     const stockReportsData = await this.pythonService.fetchStockReports(ticker, reportType);
 
