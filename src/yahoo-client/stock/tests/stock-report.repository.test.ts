@@ -27,9 +27,6 @@ describe('StockReportRepository', () => {
             findAll: jest.fn(),
             findMany: jest.fn(),
             findOne: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn(),
-            deleteMany: jest.fn(),
           },
         },
       ],
@@ -87,38 +84,5 @@ describe('StockReportRepository', () => {
     expect(stockReportRepository.findOne).toHaveBeenCalledWith(mockStockReportId);
     expect(result).toHaveProperty('ticker', 'AAPL');
     expect(result).toHaveProperty('date', new Date('2021-01-01'));
-  });
-
-  it('should update stock report object successfully', async () => {
-    jest.spyOn(stockReportRepository, 'create').mockResolvedValueOnce(mockStockReport);
-    jest.spyOn(stockReportRepository, 'update').mockResolvedValueOnce(mockStockReport);
-    await stockReportRepository.create(mockStockReport);
-    const mockStockReportId = mockStockReport._id;
-    const result = await stockReportRepository.update(mockStockReportId, mockStockReport);
-    expect(result).toEqual(mockStockReport);
-    expect(stockReportRepository.update).toHaveBeenCalledWith(mockStockReportId, mockStockReport);
-    expect(result).toHaveProperty('ticker', 'AAPL');
-    expect(result).toHaveProperty('date', new Date('2021-01-01'));
-  });
-
-  it('should delete stock report object successfully', async () => {
-    jest.spyOn(stockReportRepository, 'create').mockResolvedValueOnce(mockStockReport);
-    jest.spyOn(stockReportRepository, 'delete').mockResolvedValueOnce(mockStockReport);
-    await stockReportRepository.create(mockStockReport);
-    const mockStockReportId = mockStockReport._id;
-    const result = await stockReportRepository.delete(mockStockReportId);
-    expect(result).toEqual(mockStockReport);
-    expect(stockReportRepository.delete).toHaveBeenCalledWith(mockStockReportId);
-    expect(result).toHaveProperty('ticker', 'AAPL');
-    expect(result).toHaveProperty('date', new Date('2021-01-01'));
-  });
-
-  it('should delete multiple stock report objects successfully', async () => {
-    jest.spyOn(stockReportRepository, 'deleteMany').mockResolvedValueOnce({ deletedCount: 2 });
-
-    const ids = mockStockReports.map((report) => report._id);
-    const result = await stockReportRepository.deleteMany(ids);
-    expect(result).toEqual({ deletedCount: 2 });
-    expect(stockReportRepository.deleteMany).toHaveBeenCalledWith(ids);
   });
 });

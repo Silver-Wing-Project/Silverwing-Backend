@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { StockReportRepository } from '@stock-report/repositories/stock-report.repository';
-import { StockReport, StockReportDocument } from '@stock-report/entities/stock-report.schema';
+import { StockReportDocument } from '@stock-report/entities/stock-report.schema';
 
 export type MockStockReportRepository = {
   [K in keyof StockReportRepository]: jest.Mock;
@@ -15,7 +15,4 @@ export const createMockRepository = (): MockStockReportRepository => ({
   findAll: jest.fn(),
   findMany: jest.fn(),
   findOne: jest.fn(),
-  update: jest.fn(),
-  delete: jest.fn(),
-  deleteMany: jest.fn(),
 });
