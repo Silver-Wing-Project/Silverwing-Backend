@@ -15,7 +15,4 @@ export const createMockRepository = (): MockStockPriceRepository => ({
   findAll: jest.fn(),
   findMany: jest.fn(),
   findOne: jest.fn(),
-  update: jest.fn(),
-  delete: jest.fn(),
-  deleteMany: jest.fn(),
 });

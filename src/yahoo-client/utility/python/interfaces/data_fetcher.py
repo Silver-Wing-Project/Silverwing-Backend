@@ -64,15 +64,18 @@ class DataFetcher:
         try:
             stock = yf.Ticker(ticker)
             report_methods = {
-                'financials': stock.financials,
-                'balance_sheet': stock.balance_sheet,
-                'cash_flow': stock.cashflow
+                "financials": stock.get_income_stmt,
+                "balance_sheet": stock.get_balance_sheet,
+                "cash_flow": stock.get_cashflow,
             }
             
             if report_type not in report_methods:
                 raise ValueError(f"Invalid report type: {report_type}")
             
-            df = report_methods[report_type]
+            df = report_methods[report_type](freq="yearly")
+
+            if df is None or df.empty:
+                raise ValueError(f"No {report_type} data found for ticker '{ticker}'.")
             
         # Convert the DataFrame to a list of dictionaries format suitable for MongoDB
             report_data = {
