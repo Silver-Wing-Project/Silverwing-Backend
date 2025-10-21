@@ -1,7 +1,6 @@
 import { StockPrice } from '@stock-price/entities/stock-price.schema';
 import { parseDate } from '@utility/date-parser/date-parser.utils';
 import { CreateStockPriceDto } from '@stock-price/dto/create-stock-price.dto';
-import { UpdateStockPriceDto } from '@stock-price/dto/update-stock-price.dto';
 
 export const baseMockStockPrice: CreateStockPriceDto = {
   _id: '507f1f77bcf86cd799439016',
@@ -12,17 +11,6 @@ export const baseMockStockPrice: CreateStockPriceDto = {
   high: 120,
   low: 90,
   volume: 1000000,
-};
-
-export const updateMockStockPrice: UpdateStockPriceDto = {
-  _id: baseMockStockPrice._id,
-  ticker: baseMockStockPrice.ticker,
-  date: baseMockStockPrice.date,
-  open: 200,
-  close: 210,
-  high: 220,
-  low: 190,
-  volume: 2000000,
 };
 
 export const generateMockStockPrices = (count: number): StockPrice[] =>
