@@ -95,10 +95,13 @@ class DataFetcher:
             
             reports_json_data = json.dumps(report_data, cls=DateTimeEncoder)
             return reports_json_data
+        
         except Exception as e:
-            error_message = json.dumps({'error': str(e)})
-            print(error_message)
-            return error_message
+            error_data = {
+                'error': str(e),
+                'traceback': traceback.format_exc()
+            }
+            return json.dumps(error_data)
 
 
     @staticmethod
