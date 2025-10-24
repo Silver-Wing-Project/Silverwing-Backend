@@ -66,7 +66,7 @@ class DataFetcher:
             report_methods = {
                 "financials": stock.get_income_stmt,
                 "balance_sheet": stock.get_balance_sheet,
-                "cash_flow": stock.get_cashflow,
+                "cash_flow": stock.get_cash_flow,
             }
             
             if report_type not in report_methods:
