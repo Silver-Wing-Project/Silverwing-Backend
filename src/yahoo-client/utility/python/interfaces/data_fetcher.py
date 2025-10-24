@@ -70,7 +70,11 @@ class DataFetcher:
             }
             
             if report_type not in report_methods:
-                raise ValueError(f"Invalid report type: {report_type}")
+                error_data = {
+                    'error': f"Invalid report type: {report_type}",
+                    'valid_types': list(report_methods.keys())
+                }
+                return json.dumps(error_data)
             
             df = report_methods[report_type](freq="yearly")
 
