@@ -79,7 +79,11 @@ class DataFetcher:
             df = report_methods[report_type](freq="yearly")
 
             if df is None or df.empty:
-                raise ValueError(f"No {report_type} data found for ticker '{ticker}'.")
+                error_data = {
+                    'error': f"No {report_type} data found for ticker '{ticker}'",
+                    'ticker': ticker
+                }
+                return json.dumps(error_data)
             
         # Convert the DataFrame to a list of dictionaries format suitable for MongoDB
             report_data = {
