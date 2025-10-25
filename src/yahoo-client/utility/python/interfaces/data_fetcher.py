@@ -66,16 +66,24 @@ class DataFetcher:
             report_methods = {
                 "financials": stock.get_income_stmt,
                 "balance_sheet": stock.get_balance_sheet,
-                "cash_flow": stock.get_cashflow,
+                "cash_flow": stock.get_cash_flow,
             }
             
             if report_type not in report_methods:
-                raise ValueError(f"Invalid report type: {report_type}")
+                error_data = {
+                    'error': f"Invalid report type: {report_type}",
+                    'valid_types': list(report_methods.keys())
+                }
+                return json.dumps(error_data)
             
             df = report_methods[report_type](freq="yearly")
 
             if df is None or df.empty:
-                raise ValueError(f"No {report_type} data found for ticker '{ticker}'.")
+                error_data = {
+                    'error': f"No {report_type} data found for ticker '{ticker}'",
+                    'ticker': ticker
+                }
+                return json.dumps(error_data)
             
         # Convert the DataFrame to a list of dictionaries format suitable for MongoDB
             report_data = {
@@ -87,10 +95,13 @@ class DataFetcher:
             
             reports_json_data = json.dumps(report_data, cls=DateTimeEncoder)
             return reports_json_data
+        
         except Exception as e:
-            error_message = json.dumps({'error': str(e)})
-            print(error_message)
-            return error_message
+            error_data = {
+                'error': str(e),
+                'traceback': traceback.format_exc()
+            }
+            return json.dumps(error_data)
 
 
     @staticmethod
