@@ -1,4 +1,3 @@
-import { GrowthRates } from './../interfaces/big-five.interface';
 import { GrowthRates, YearValue } from '../interfaces/big-five.interface';
 
 /**
