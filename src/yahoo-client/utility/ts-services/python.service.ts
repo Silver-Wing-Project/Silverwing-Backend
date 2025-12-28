@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, InternalServerErrorException } from '@nestjs/common';
 import { PythonExecutorService } from '@python-executor/python-executor.service';
 import { formatDateToString } from '@utility/date-parser/date-parser.utils';
 import * as path from 'path';
@@ -52,7 +52,12 @@ export class PythonService {
     ]);
 
     // console.log(stockReportsData);
-    const firstJsonObject = stockReportsData.split('\n')[0];
+    const lines = stockReportsData.split('\n');
+    const firstJsonObject = lines.find((line) => line.trim().startsWith('{') || line.trim().startsWith('['));
+
+    if (!firstJsonObject) {
+      throw new InternalServerErrorException('No JSON in Python output');
+    }
 
     try {
       const parsed = JSON.parse(firstJsonObject);
