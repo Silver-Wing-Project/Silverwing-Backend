@@ -6,10 +6,10 @@ import { EPSGrowthCalculator } from './calculators/eps-growth.calculator';
 import { FCFGrowthCalculator } from './calculators/fcf-growth.calculator';
 import {
   BalanceSheetData,
-  CashFlowData,
-  IncomeStmtData,
   BigFiveNumbers,
+  CashFlowData,
   CombinedFinancialData,
+  IncomeStmtData,
   InvestmentRecommendation,
   MetricStatus,
 } from './interfaces/big-five.interface';
@@ -87,7 +87,7 @@ export class BigFiveAnalysisService {
   }
 
   /**
-   * Calculate all Bgi Five Numbers for a given ticker
+   * Calculate all Big Five Numbers for a given ticker
    */
   async calculateBigFive(ticker: string, data: CombinedFinancialData): Promise<BigFiveNumbers> {
     const { incomeStmt, balanceSheet, cashFlow } = data;
@@ -179,6 +179,65 @@ export class BigFiveAnalysisService {
       metricsPassingThreshold,
       totalMetrics,
       details: metrics,
+    };
+  }
+
+  protected mockThreeReports() {
+    const mockIncome: IncomeStmtData = {
+      '2025-06-30T00:00:00.000': {
+        TotalRevenue: 250000000000, // 250B
+        EBIT: 100000000000, // 100B
+        DilutedEPS: 12.5,
+        TaxRateForCalcs: 0.21, // 21%
+        DilutedAverageShares: 7434000000,
+      },
+      '2024-06-30T00:00:00.000': {
+        TotalRevenue: 210000000000, // Growth check
+        EBIT: 85000000000,
+        DilutedEPS: 10.2,
+        TaxRateForCalcs: 0.19,
+        DilutedAverageShares: 7500000000,
+      },
+      '2023-06-30T00:00:00.000': {
+        TotalRevenue: 180000000000,
+        EBIT: 70000000000,
+        DilutedEPS: 8.5,
+        TaxRateForCalcs: 0.18,
+        DilutedAverageShares: 7600000000,
+      },
+    };
+
+    const mockBalance: BalanceSheetData = {
+      '2025-06-30T00:00:00.000': {
+        StockholdersEquity: 343479000000, // From your MSFT example
+        TotalDebt: 60588000000, // From your MSFT example
+      },
+      '2024-06-30T00:00:00.000': {
+        StockholdersEquity: 280000000000,
+        TotalDebt: 55000000000,
+      },
+      '2023-06-30T00:00:00.000': {
+        StockholdersEquity: 220000000000,
+        TotalDebt: 50000000000,
+      },
+    };
+
+    const mockCashFlow: CashFlowData = {
+      '2025-06-30T00:00:00.000': {
+        FreeCashFlow: 80000000000, // 80B
+      },
+      '2024-06-30T00:00:00.000': {
+        FreeCashFlow: 65000000000,
+      },
+      '2023-06-30T00:00:00.000': {
+        FreeCashFlow: 55000000000,
+      },
+    };
+
+    return {
+      incomeStmt: mockIncome,
+      balanceSheet: mockBalance,
+      cashFlow: mockCashFlow,
     };
   }
 }
