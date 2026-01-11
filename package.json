@@ -9,7 +9,8 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "python:install": "pip install -r src/yahoo-client/utility/python/common/requirements.txt",
+    "start:dev": "npm run python:install && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -26,6 +27,12 @@
     "test:stock-report-service": "jest src/yahoo-client/stock/stock-report/__tests__/stock-report.service.spec.ts",
     "test:stock-repositories": "npm run test:stock-price-repository && npm run test:stock-report-repository",
     "test:stock-services": "npm run test:stock-price-service && npm run test:stock-report-service",
+    "test:big-five-controller": "jest src/yahoo-client/analysis/big-five-analysis/big-five-analysis.controller.spec.ts",
+    "test:big-five-service": "jest src/yahoo-client/analysis/big-five-analysis/big-five-analysis.service.spec.ts",
+    "test:big-five-service-integration": "jest src/yahoo-client/analysis/big-five-analysis/big-five-analysis.service.integration.spec.ts",
+    "test:big-five-msft-real-data": "jest src/yahoo-client/analysis/big-five-analysis/msft-real-data.integration.spec.ts",
+    "test:analysis-service": "npm run test:big-five-controller && npm run test:big-five-service",
+    "test:analysis-integration": "npm run test:big-five-service-integration && npm run test:big-five-msft-real-data",
     "test:python-data-manager": "pytest src/yahoo-client/utility/python/tests/test_data_manager.py"
   },
   "dependencies": {
