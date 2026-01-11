@@ -49,7 +49,7 @@ export class RoicCalculator extends BaseCalculator {
   /**
    * Calculate ROIC for the most recent year
    */
-  calculateMostRecent(incomeStmt: IncomeStmtData, balanceSheet: BalanceSheetData) {
+  calculateMostRecent(incomeStmt: IncomeStmtData, balanceSheet: BalanceSheetData): number {
     const years = this.getSortedYears(incomeStmt);
     if (years.length === 0) return 0;
 
