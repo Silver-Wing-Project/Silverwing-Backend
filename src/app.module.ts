@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FinanceModule } from '@finance/finance.module';
 import { StockModule } from '@stock/stock.module';
+import { BigFiveAnalysisModule } from './yahoo-client/analysis/big-five-analysis/big-five-analysis.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { StockModule } from '@stock/stock.module';
     }),
     FinanceModule,
     StockModule,
+    BigFiveAnalysisModule,
   ],
   controllers: [AppController],
   providers: [AppService],
