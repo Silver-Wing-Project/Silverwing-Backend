@@ -18,6 +18,7 @@ export class BigFiveAnalysisController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   async analysisFiveNumbers(@Param('ticker') ticker: string): Promise<BigFiveNumbers> {
+    this.logger.log(`Received analysis request for ticker: ${ticker}`);
     const result = await this.bigFiveAnalysisService.fetchAndCalculate(ticker);
     // console.log(`result: `, result);
     return result;
@@ -26,6 +27,8 @@ export class BigFiveAnalysisController {
   @Get('sync-analyze/:ticker')
   @ApiOperation({ summary: 'Scrape latest data and analyze in one request' })
   async syncAndAnalyze(@Param('ticker') ticker: string): Promise<BigFiveNumbers> {
-    return await this.bigFiveAnalysisService.syncAndCalculate(ticker);
+    this.logger.log(`Received sync & analyze request for ticker: ${ticker}`);
+    const result = await this.bigFiveAnalysisService.syncAndCalculate(ticker);
+    return result;
   }
 }
