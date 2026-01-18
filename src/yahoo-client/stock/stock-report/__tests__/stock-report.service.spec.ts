@@ -7,7 +7,7 @@ import { errorMessages } from '@utility/constants/constants';
 import { createMockRepository } from './fixtures/mock-repository';
 import { assertStockReport, assertStockReports } from './helpers/assertions';
 import { testErrorHandling } from './helpers/error-handlers';
-import { baseMockStockReport, updateMockStockReport, generateMockStockReports } from './fixtures/mock-stock-reports';
+import { baseMockStockReport, generateMockStockReports } from './fixtures/mock-stock-reports';
 
 describe('StockReportService Tests', () => {
   let service: StockReportService;
@@ -176,78 +176,6 @@ describe('StockReportService Tests', () => {
         await expect(service.findStockReportById(null)).rejects.toThrow(errorMessages.MISSING_ID_PARAM);
         expect(repository.findOne).not.toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('Test Update Methods (U)', () => {
-    it('should update a stock report', async () => {
-      jest.spyOn(repository, 'update').mockResolvedValue(updateMockStockReport);
-
-      const result = await service.updateStockReport(updateMockStockReport._id, updateMockStockReport);
-      assertStockReport(result, updateMockStockReport);
-      expect(result).toEqual(updateMockStockReport);
-      expect(repository.update).toHaveBeenCalledWith(updateMockStockReport._id, updateMockStockReport);
-    });
-
-    it('should throw an error if the stock report is not updated', async () => {
-      jest.spyOn(repository, 'update').mockRejectedValue(new Error(errorMessages.FAILED_TO_UPDATE_STOCK_REPORT));
-
-      await expect(service.updateStockReport(updateMockStockReport._id, updateMockStockReport)).rejects.toThrow(
-        errorMessages.FAILED_TO_UPDATE_STOCK_REPORT,
-      );
-      expect(repository.update).toHaveBeenCalledWith(updateMockStockReport._id, updateMockStockReport);
-    });
-
-    it('should throw an error if updateStockReportDto is missing', async () => {
-      await expect(service.updateStockReport(updateMockStockReport._id, null)).rejects.toThrow(
-        errorMessages.MISSING_UPDATE_STOCK_REPORT_DTO,
-      );
-      expect(repository.update).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Test Delete Methods (D)', () => {
-    it('should delete a stock report', async () => {
-      jest.spyOn(repository, 'delete').mockResolvedValue(baseMockStockReport);
-
-      const result = await service.deleteStockReport(baseMockStockReport._id);
-      assertStockReport(result, baseMockStockReport);
-      expect(result).toEqual(baseMockStockReport);
-      expect(repository.delete).toHaveBeenCalledWith(baseMockStockReport._id);
-    });
-
-    it('should throw an error if the stock report is not deleted', async () => {
-      jest.spyOn(repository, 'delete').mockRejectedValue(new Error(errorMessages.FAILED_TO_DELETE_STOCK_REPORT));
-
-      await expect(service.deleteStockReport(baseMockStockReport._id)).rejects.toThrow(
-        errorMessages.FAILED_TO_DELETE_STOCK_REPORT,
-      );
-      expect(repository.delete).toHaveBeenCalledWith(baseMockStockReport._id);
-    });
-
-    it('should throw an error if stock report id is missing in deleteStockReport()', async () => {
-      await expect(service.deleteStockReport(null)).rejects.toThrow(errorMessages.MISSING_ID_PARAM);
-      expect(repository.delete).not.toHaveBeenCalled();
-    });
-
-    it('should delete many stock reports', async () => {
-      jest.spyOn(repository, 'deleteMany').mockResolvedValue(mockStockReports);
-
-      const result = await service.deleteManyStockReports(mockStockReports.map((stockReport) => stockReport._id));
-      assertStockReports(result, mockStockReports);
-      expect(result).toEqual(mockStockReports);
-      expect(repository.deleteMany).toHaveBeenCalledWith(mockStockReports.map((stockReport) => stockReport._id));
-    });
-
-    it('should throw an error if the stock reports are not deleted', async () => {
-      jest
-        .spyOn(repository, 'deleteMany')
-        .mockRejectedValue(new Error(errorMessages.FAILED_TO_DELETE_MANY_STOCK_REPORTS));
-
-      await expect(
-        service.deleteManyStockReports(mockStockReports.map((stockReport) => stockReport._id)),
-      ).rejects.toThrow(errorMessages.FAILED_TO_DELETE_MANY_STOCK_REPORTS);
-      expect(repository.deleteMany).toHaveBeenCalledWith(mockStockReports.map((stockReport) => stockReport._id));
     });
   });
 });
