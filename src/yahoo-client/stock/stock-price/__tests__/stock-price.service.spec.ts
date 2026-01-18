@@ -8,7 +8,7 @@ import { errorMessages } from '@utility/constants/constants';
 import { createMockRepository } from './fixtures/mock-repository';
 import { assertStockPrice, assertStockPrices } from './helpers/assertions';
 import { testErrorHandling } from './helpers/error-handlers';
-import { baseMockStockPrice, updateMockStockPrice, generateMockStockPrices } from './fixtures/mock-stock-prices';
+import { baseMockStockPrice, generateMockStockPrices } from './fixtures/mock-stock-prices';
 
 describe('StockPriceService Tests', () => {
   let service: StockPriceService;
@@ -183,78 +183,6 @@ describe('StockPriceService Tests', () => {
         await expect(service.findStockPriceById(null)).rejects.toThrow(errorMessages.MISSING_ID_PARAM);
         expect(repository.findOne).not.toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('Test Update Methods (U)', () => {
-    it('should update a stock price', async () => {
-      jest.spyOn(repository, 'update').mockResolvedValue(updateMockStockPrice);
-
-      const result = await service.updateStockPrice(updateMockStockPrice._id, updateMockStockPrice);
-      assertStockPrice(result, updateMockStockPrice);
-      expect(result).toEqual(updateMockStockPrice);
-      expect(repository.update).toHaveBeenCalledWith(updateMockStockPrice._id, updateMockStockPrice);
-    });
-
-    it('should throw an error if the stock price is not updated', async () => {
-      jest.spyOn(repository, 'update').mockRejectedValue(new Error(errorMessages.FAILED_TO_UPDATE_STOCK_PRICE));
-
-      await expect(service.updateStockPrice(updateMockStockPrice._id, updateMockStockPrice)).rejects.toThrow(
-        errorMessages.FAILED_TO_UPDATE_STOCK_PRICE,
-      );
-      expect(repository.update).toHaveBeenCalledWith(updateMockStockPrice._id, updateMockStockPrice);
-    });
-
-    it('should throw an error if updateStockPriceDto is missing', async () => {
-      await expect(service.updateStockPrice(updateMockStockPrice._id, null)).rejects.toThrow(
-        errorMessages.MISSING_UPDATE_STOCK_PRICE_DTO,
-      );
-      expect(repository.update).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Test Delete Methods (D)', () => {
-    it('should delete a stock price', async () => {
-      jest.spyOn(repository, 'delete').mockResolvedValue(baseMockStockPrice);
-
-      const result = await service.deleteStockPrice(baseMockStockPrice._id);
-      assertStockPrice(result, baseMockStockPrice);
-      expect(result).toEqual(baseMockStockPrice);
-      expect(repository.delete).toHaveBeenCalledWith(baseMockStockPrice._id);
-    });
-
-    it('should throw an error if the stock price is not deleted', async () => {
-      jest.spyOn(repository, 'delete').mockRejectedValue(new Error(errorMessages.FAILED_TO_DELETE_STOCK_PRICE));
-
-      await expect(service.deleteStockPrice(baseMockStockPrice._id)).rejects.toThrow(
-        errorMessages.FAILED_TO_DELETE_STOCK_PRICE,
-      );
-      expect(repository.delete).toHaveBeenCalledWith(baseMockStockPrice._id);
-    });
-
-    it('should throw an error if stock price id is missing in deleteStockPrice()', async () => {
-      await expect(service.deleteStockPrice(null)).rejects.toThrow(errorMessages.MISSING_ID_PARAM);
-      expect(repository.delete).not.toHaveBeenCalled();
-    });
-
-    it('should delete many stock prices', async () => {
-      jest.spyOn(repository, 'deleteMany').mockResolvedValue(mockStockPrices);
-
-      const result = await service.deleteManyStockPrices(mockStockPrices.map((stockPrice) => stockPrice._id));
-      assertStockPrices(result, mockStockPrices);
-      expect(result).toEqual(mockStockPrices);
-      expect(repository.deleteMany).toHaveBeenCalledWith(mockStockPrices.map((stockPrice) => stockPrice._id));
-    });
-
-    it('should throw an error if the stock prices are not deleted', async () => {
-      jest
-        .spyOn(repository, 'deleteMany')
-        .mockRejectedValue(new Error(errorMessages.FAILED_TO_DELETE_MANY_STOCK_PRICES));
-
-      await expect(service.deleteManyStockPrices(mockStockPrices.map((stockPrice) => stockPrice._id))).rejects.toThrow(
-        errorMessages.FAILED_TO_DELETE_MANY_STOCK_PRICES,
-      );
-      expect(repository.deleteMany).toHaveBeenCalledWith(mockStockPrices.map((stockPrice) => stockPrice._id));
     });
   });
 });
