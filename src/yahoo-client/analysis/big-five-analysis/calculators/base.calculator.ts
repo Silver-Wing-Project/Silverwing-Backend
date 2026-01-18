@@ -89,10 +89,14 @@ export class BaseCalculator {
     }
 
     // Average growth rate (only for non-zero values)
-    const validGrowthRates = [growthRates.tenYear, growthRates.fiveYear, growthRates.oneYear].filter((g) => g !== 0);
+    // const validGrowthRates = [growthRates.tenYear, growthRates.fiveYear, growthRates.oneYear].filter((g) => g !== 0);
 
-    growthRates.average =
-      validGrowthRates.length > 0 ? validGrowthRates.reduce((sum, g) => sum + g, 0) / validGrowthRates.length : 0;
+    const periods = [];
+    if (growthRates.oneYear !== 0 || sortedValues.length >= 2) periods.push(growthRates.oneYear);
+    if (growthRates.fiveYear !== 0) periods.push(growthRates.fiveYear);
+    if (growthRates.tenYear !== 0) periods.push(growthRates.tenYear);
+
+    growthRates.average = periods.length > 0 ? periods.reduce((sum, g) => sum + g, 0) / periods.length : 0;
 
     return growthRates;
   }
