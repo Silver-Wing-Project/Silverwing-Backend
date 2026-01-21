@@ -29,10 +29,10 @@
     "test:stock-services": "npm run test:stock-price-service && npm run test:stock-report-service",
     "test:big-five-controller": "jest src/yahoo-client/analysis/big-five-analysis/big-five-analysis.controller.spec.ts",
     "test:big-five-service": "jest src/yahoo-client/analysis/big-five-analysis/big-five-analysis.service.spec.ts",
+    "test:big-five-logic": "npm run test:big-five-controller && npm run test:big-five-service",
     "test:big-five-service-integration": "jest src/yahoo-client/analysis/big-five-analysis/big-five-analysis.service.integration.spec.ts",
     "test:big-five-msft-real-data": "jest src/yahoo-client/analysis/big-five-analysis/msft-real-data.integration.spec.ts",
-    "test:analysis-service": "npm run test:big-five-controller && npm run test:big-five-service",
-    "test:analysis-integration": "npm run test:big-five-service-integration && npm run test:big-five-msft-real-data",
+    "test:big-five-integration": "npm run test:big-five-service-integration && npm run test:big-five-msft-real-data",
     "test:python-data-manager": "pytest src/yahoo-client/utility/python/tests/test_data_manager.py"
   },
   "dependencies": {
