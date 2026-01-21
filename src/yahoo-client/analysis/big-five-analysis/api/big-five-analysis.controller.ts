@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Logger } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
-import { BigFiveAnalysisService } from './big-five-analysis.service';
-import { BigFiveNumbers } from './interfaces/big-five.interface';
+import { BigFiveAnalysisService } from '../application/big-five-analysis.service';
+import { BigFiveNumbers } from '../domain/interfaces/big-five.interface';
 
 @ApiTags('Big-Five')
 @Controller('big-five')

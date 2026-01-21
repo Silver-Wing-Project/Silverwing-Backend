@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { RoicCalculator } from './calculators/roic.calculator';
-import { BVPSGrowthCalculator } from './calculators/bvps-growth.calculator';
-import { SalesGrowthCalculator } from './calculators/sales-growth.calculator';
-import { EPSGrowthCalculator } from './calculators/eps-growth.calculator';
-import { FCFGrowthCalculator } from './calculators/fcf-growth.calculator';
+import { RoicCalculator } from '../domain/calculators/roic.calculator';
+import { BVPSGrowthCalculator } from '../domain/calculators/bvps-growth.calculator';
+import { SalesGrowthCalculator } from '../domain/calculators/sales-growth.calculator';
+import { EPSGrowthCalculator } from '../domain/calculators/eps-growth.calculator';
+import { FCFGrowthCalculator } from '../domain/calculators/fcf-growth.calculator';
 import {
   BalanceSheetData,
   BigFiveNumbers,
@@ -12,7 +12,7 @@ import {
   IncomeStmtData,
   InvestmentRecommendation,
   MetricStatus,
-} from './interfaces/big-five.interface';
+} from '../domain/interfaces/big-five.interface';
 import { StockReportService } from '@/yahoo-client/stock/stock-report/stock-report.service';
 import { PythonService } from '@/yahoo-client/utility/ts-services/python.service';
 import { parseStockReportsData } from '@/yahoo-client/utility/data-parsers/data-parser.utils';

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BigFiveAnalysisController } from './big-five-analysis.controller';
-import { BigFiveAnalysisService } from './big-five-analysis.service';
-import { BigFiveNumbers } from './interfaces/big-five.interface';
+import { BigFiveAnalysisService } from '../application/big-five-analysis.service';
+import { BigFiveNumbers } from '../domain/interfaces/big-five.interface';
 
 describe('BigFiveAnalysisController', () => {
   let controller: BigFiveAnalysisController;
