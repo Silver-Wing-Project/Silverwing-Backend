@@ -1,5 +1,5 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
-import { StockPrice } from '@stock/stock-price/entities/stock-price.schema';
+import { StockPrice } from '@/future/stock-price/entities/stock-price.schema';
 import {
   IStockDataOrchestrationService,
   StockDataRequest,

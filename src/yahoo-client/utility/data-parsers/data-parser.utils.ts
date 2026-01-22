@@ -1,4 +1,4 @@
-import { CreateStockPriceDto } from '@stock-price/dto/create-stock-price.dto';
+import { CreateStockPriceDto } from '@/future/stock-price/dto/create-stock-price.dto';
 import { CreateStockReportDto } from '@stock/stock-report/dto/create-stock-report.dto';
 import mongoose from 'mongoose';
 import { parseDate } from '@date-parser/date-parser.utils';

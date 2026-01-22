@@ -1,4 +1,4 @@
-import { StockPrice } from '@stock/stock-price/entities/stock-price.schema';
+import { StockPrice } from '@/future/stock-price/entities/stock-price.schema';
 
 export interface StockDataRequest {
   ticker: string;
