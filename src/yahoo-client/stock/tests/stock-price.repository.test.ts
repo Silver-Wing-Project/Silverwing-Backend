@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { StockPriceRepository } from '../stock-price/repositories/stock-price.repository';
-import { StockPrice } from '../stock-price/entities/stock-price.schema';
+import { StockPriceRepository } from '../../../future/stock-price/repositories/stock-price.repository';
+import { StockPrice } from '../../../future/stock-price/entities/stock-price.schema';
 import { parseDate } from '../../utility/date-parser/date-parser.utils';
 
 describe('StockPriceRepository', () => {
