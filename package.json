@@ -26,7 +26,7 @@
     "test:stock-repositories": "npm run test:stock-price-repository && npm run test:stock-report-repository",
     "test:stock-price-service": "jest src/yahoo-client/stock/stock-price/__tests__/stock-price.service.spec.ts",
     "test:stock-report-service": "jest src/yahoo-client/stock/stock-report/__tests__/stock-report.service.spec.ts",
-    "test:stock-services": "npm run test:stock-price-service && npm run test:stock-report-service",
+    "test:stock-services": "npm run test:stock-report-service && npm run test:stock-price-service",
     "test:big-five-controller": "jest src/yahoo-client/analysis/big-five-analysis/api/big-five-analysis.controller.spec.ts",
     "test:big-five-service": "jest src/yahoo-client/analysis/big-five-analysis/application/big-five-analysis.service.spec.ts",
     "test:big-five-logic": "npm run test:big-five-controller && npm run test:big-five-service",
