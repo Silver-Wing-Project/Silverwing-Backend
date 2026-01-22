@@ -4,13 +4,12 @@ import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { PythonService } from '@utility/ts-services/python.service';
 import { StockReportService } from '@stock/stock-report/stock-report.service';
-import { StockPriceService } from '@stock/stock-price/stock-price.service';
-import { StockPrice } from '@stock/stock-price/entities/stock-price.schema';
+// import { StockPrice } from '@/future/stock-price/entities/stock-price.schema';
 import { StockReport } from '@stock/stock-report/entities/stock-report.schema';
-import { parseStockPricesData, parseStockReportsData } from '@utility/data-parsers/data-parser.utils';
-import { DateValidationPipe } from '@utility/pipes/date-validation.pipe';
+// import { parseStockPricesData, parseStockReportsData } from '@utility/data-parsers/data-parser.utils';
+// import { DateValidationPipe } from '@utility/pipes/date-validation.pipe';
 import { StockDataOrchestrationService } from '@ts-services/stock-data-orchestration/stock-data-orchestration.service';
-import { formatDateToString } from '@date-parser/date-parser.utils';
+// import { formatDateToString } from '@date-parser/date-parser.utils';
 
 @ApiTags('Finance')
 @Controller('finance')
@@ -19,7 +18,6 @@ export class FinanceController {
 
   constructor(
     private readonly pythonService: PythonService,
-    private readonly stockPriceService: StockPriceService,
     private readonly stockReportService: StockReportService,
     private readonly stockDataOrchestrationService: StockDataOrchestrationService,
   ) {}
@@ -33,46 +31,46 @@ export class FinanceController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 404, description: 'Stock prices not found or invalid stock ticker' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async fetchStockPrices(
-    @Param('ticker') ticker: string,
-    @Param('startDate', DateValidationPipe) startDate: Date,
-    @Param('endDate', DateValidationPipe) endDate: Date,
-  ): Promise<StockPrice[]> {
-    this.logger.log(
-      `Fetching stock prices for ${ticker} from ${formatDateToString(startDate)} to ${formatDateToString(endDate)}`,
-    );
+  // async fetchStockPrices(
+  //   @Param('ticker') ticker: string,
+  //   @Param('startDate', DateValidationPipe) startDate: Date,
+  //   @Param('endDate', DateValidationPipe) endDate: Date,
+  // ): Promise<StockPrice[]> {
+  //   this.logger.log(
+  //     `Fetching stock prices for ${ticker} from ${formatDateToString(startDate)} to ${formatDateToString(endDate)}`,
+  //   );
 
-    try {
-      const existingPrices = await this.stockPriceService.findManyStockPrices(ticker, startDate, endDate);
+  //   try {
+  //     const existingPrices = await this.stockPriceService.findManyStockPrices(ticker, startDate, endDate);
 
-      const result = await this.stockDataOrchestrationService.orchestrateStockDataRetrieval(
-        { ticker, startDate, endDate },
-        existingPrices,
-        async (ticker: string, startDate: Date, endDate: Date) => {
-          const rawData = await this.pythonService.fetchStockData(ticker, startDate, endDate);
-          if (!Array.isArray(rawData)) {
-            throw new InternalServerErrorException('Invalid data format received from Python service');
-          }
-          return parseStockPricesData(rawData);
-        },
-        async (data: StockPrice[]) => {
-          return this.stockPriceService.createManyStockPrices(data);
-        },
-      );
+  //     const result = await this.stockDataOrchestrationService.orchestrateStockDataRetrieval(
+  //       { ticker, startDate, endDate },
+  //       existingPrices,
+  //       async (ticker: string, startDate: Date, endDate: Date) => {
+  //         const rawData = await this.pythonService.fetchStockData(ticker, startDate, endDate);
+  //         if (!Array.isArray(rawData)) {
+  //           throw new InternalServerErrorException('Invalid data format received from Python service');
+  //         }
+  //         return parseStockPricesData(rawData);
+  //       },
+  //       async (data: StockPrice[]) => {
+  //         return this.stockPriceService.createManyStockPrices(data);
+  //       },
+  //     );
 
-      this.logger.log(
-        `Stock prices for ${ticker} : fetched ${result.summary.totalRecords} total records, ` +
-          `${result.summary.newRecords} new records, ` +
-          `${result.summary.missingRangesFetched} missing ranges fetched.`,
-      );
+  //     this.logger.log(
+  //       `Stock prices for ${ticker} : fetched ${result.summary.totalRecords} total records, ` +
+  //         `${result.summary.newRecords} new records, ` +
+  //         `${result.summary.missingRangesFetched} missing ranges fetched.`,
+  //     );
 
-      return result.data;
-    } catch (error) {
-      this.logger.error(`Error fetching stock prices for ${ticker}`, error);
-      throw new InternalServerErrorException('Failed to fetch stock prices');
-    }
-  }
-
+  //     return result.data;
+  //   } catch (error) {
+  //     this.logger.error(`Error fetching stock prices for ${ticker}`, error);
+  //     throw new InternalServerErrorException('Failed to fetch stock prices');
+  //   }
+  // }
+  
   @Get('fetch-stock-reports/:ticker/:reportType')
   @ApiOperation({ summary: 'Fetch stock reports for a given ticker and report type' })
   @ApiParam({ name: 'ticker', type: String, description: 'Stock Ticker', example: 'AAPL', required: true })

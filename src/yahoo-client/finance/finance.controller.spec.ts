@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FinanceController } from './finance.controller';
-import { StockPriceService } from '@stock/stock-price/stock-price.service';
+import { StockPriceService } from '@/future/stock-price/stock-price.service';
 import { StockReportService } from '@stock/stock-report/stock-report.service';
 import { PythonService } from '@utility/ts-services/python.service';
 
