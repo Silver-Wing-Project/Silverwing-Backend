@@ -11,7 +11,7 @@ import { StockPrice } from './entities/stock-price.schema';
 import { plainToClass } from 'class-transformer';
 import { formatDateToString, parseDate } from '@utility/date-parser/date-parser.utils';
 import { errorMessages } from '@utility/constants/constants';
-import { ServiceErrorHandler } from '../utils/service-error.handler';
+import { ServiceErrorHandler } from '../../yahoo-client/stock/utils/service-error.handler';
 
 @Injectable()
 export class StockPriceService {

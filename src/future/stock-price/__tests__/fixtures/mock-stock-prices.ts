@@ -1,6 +1,6 @@
-import { StockPrice } from '@stock-price/entities/stock-price.schema';
+import { StockPrice } from '@/future/stock-price/entities/stock-price.schema';
 import { parseDate } from '@utility/date-parser/date-parser.utils';
-import { CreateStockPriceDto } from '@stock-price/dto/create-stock-price.dto';
+import { CreateStockPriceDto } from '@/future/stock-price/dto/create-stock-price.dto';
 
 export const baseMockStockPrice: CreateStockPriceDto = {
   _id: '507f1f77bcf86cd799439016',

@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
-import { StockPriceRepository } from '@stock-price/repositories/stock-price.repository';
-import { StockPriceDocument } from '@stock-price/entities/stock-price.schema';
+import { StockPriceRepository } from '@/future/stock-price/repositories/stock-price.repository';
+import { StockPriceDocument } from '@/future/stock-price/entities/stock-price.schema';
 
 export type MockStockPriceRepository = {
   [K in keyof StockPriceRepository]: jest.Mock;

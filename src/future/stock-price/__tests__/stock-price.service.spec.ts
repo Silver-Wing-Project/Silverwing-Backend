@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { StockPriceService } from '../stock-price.service';
 import { StockPriceRepository } from '../repositories/stock-price.repository';
 import { StockPrice } from '../entities/stock-price.schema';
@@ -138,13 +138,15 @@ describe('StockPriceService Tests', () => {
         );
       });
 
-      it('should throw NotFoundException if no prices found', async () => {
-        jest.spyOn(repository, 'findMany').mockResolvedValue(null);
-        await testErrorHandling(
-          () => service.findManyStockPrices(mockQuery.ticker, startDate, endDate),
-          NotFoundException,
-          errorMessages.FAILED_TO_GET_MANY_STOCK_PRICES,
-          null,
+      it('should return empty array if no prices found', async () => {
+        jest.spyOn(repository, 'findMany').mockResolvedValue([]);
+        const result = await service.findManyStockPrices(mockQuery.ticker, startDate, endDate);
+
+        expect(result).toEqual([]);
+        expect(repository.findMany).toHaveBeenCalledWith(
+          expect.objectContaining({
+            ticker: mockQuery.ticker,
+          }),
         );
       });
 
