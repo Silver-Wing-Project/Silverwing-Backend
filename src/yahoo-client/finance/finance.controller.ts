@@ -1,4 +1,4 @@
-import { Controller, Get, InternalServerErrorException, Param, Logger } from '@nestjs/common';
+import { Controller, Get, Param, Logger } from '@nestjs/common';
 
 import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
@@ -6,7 +6,7 @@ import { PythonService } from '@utility/ts-services/python.service';
 import { StockReportService } from '@stock/stock-report/stock-report.service';
 // import { StockPrice } from '@/future/stock-price/entities/stock-price.schema';
 import { StockReport } from '@stock/stock-report/entities/stock-report.schema';
-// import { parseStockPricesData, parseStockReportsData } from '@utility/data-parsers/data-parser.utils';
+import { parseStockPricesData, parseStockReportsData } from '@utility/data-parsers/data-parser.utils';
 // import { DateValidationPipe } from '@utility/pipes/date-validation.pipe';
 import { StockDataOrchestrationService } from '@ts-services/stock-data-orchestration/stock-data-orchestration.service';
 // import { formatDateToString } from '@date-parser/date-parser.utils';
