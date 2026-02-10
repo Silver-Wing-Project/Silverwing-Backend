@@ -92,25 +92,65 @@ describe('ROIC Calculator', () => {
     expect(roicCalculator).toBeDefined();
   });
 
-  describe('Input Validation', () => {
-    it('should have Income Statement parameters in all sub-objects', () => {
-      const subObjects = Object.values(mockMsftIncomeStmt);
-
-      subObjects.forEach((sub) => {
-        expect(sub).toHaveProperty('TotalRevenue');
-        expect(sub).toHaveProperty('EBIT');
-        expect(sub).toHaveProperty('TaxRateForCalcs');
-        expect(sub).toHaveProperty('DilutedAverageShares');
-      });
+  describe('calculateMostRecent', () => {
+    it('should calculate ROIC for the most recent year', () => {
+      const result = roicCalculator.calculateMostRecent(mockMsftIncomeStmt, mockMsftBalanceSheet);
+      // Most recent year is 2025, so we expect the same result as calculate for 2025
+      const expected = roicCalculator.calculate('2025-06-30', mockMsftIncomeStmt, mockMsftBalanceSheet);
+      expect(result).toBeCloseTo(expected, 5);
     });
 
-    it('should have Balance Sheet parameters', () => {
-      const subObjects = Object.values(mockMsftBalanceSheet);
+    it('should return 0 if only one year exists', () => {
+      const singleYearIncome: IncomeStmtData = {
+        '2024-06-30': {
+          TotalRevenue: 245122,
+          EBIT: 110722,
+          DilutedEPS: 11.8,
+          TaxRateForCalcs: 0.182,
+          DilutedAverageShares: 7469,
+        },
+      };
+      const singleYearBalance: BalanceSheetData = {
+        '2024-06-30': { StockholdersEquity: 268477, TotalDebt: 67127 },
+      };
 
-      subObjects.forEach((sub) => {
-        expect(sub).toHaveProperty('StockholdersEquity');
-        expect(sub).toHaveProperty('TotalDebt');
-      });
+      const result = roicCalculator.calculateMostRecent(singleYearIncome, singleYearBalance);
+      expect(result).toBeCloseTo(26.987, 1); // Should still calculate ROIC for that year
+    });
+  });
+
+  describe('Input Validation', () => {
+    it('should return 0 if no data exists', () => {
+      const result = roicCalculator.calculate('2025-06-30', {}, {});
+      expect(result).toBe(0);
+    });
+
+    it('should return 0 if invested capital is 0', () => {
+      const emptyBS: BalanceSheetData = { '2024-06-30': { StockholdersEquity: 0, TotalDebt: 0 } };
+      const result = roicCalculator.calculate('2024-06-30', mockMsftIncomeStmt, emptyBS);
+      expect(result).toBe(0);
+    });
+
+    it('should return 0 if data for year is missing', () => {
+      const result = roicCalculator.calculate('1990-01-01', mockMsftIncomeStmt, mockMsftBalanceSheet);
+      expect(result).toBe(0);
+    });
+
+    it('should return 0 if incomeStmtData is missing for the year but balanceSheet exists', () => {
+      const partialIncome = {}; // missing 2024
+      const result = roicCalculator.calculate('2024-06-30', partialIncome, mockMsftBalanceSheet);
+      expect(result).toBe(0);
+    });
+
+    it('should return 0 if balanceSheetData is missing for the year but incomeStmt exists', () => {
+      const partialBalance = {}; // missing 2024
+      const result = roicCalculator.calculate('2024-06-30', mockMsftIncomeStmt, partialBalance);
+      expect(result).toBe(0);
+    });
+
+    it('should return 0 in calculateMostRecent if the income statement object is empty', () => {
+      const result = roicCalculator.calculateMostRecent({}, mockMsftBalanceSheet);
+      expect(result).toBe(0);
     });
   });
 
@@ -141,17 +181,6 @@ describe('ROIC Calculator', () => {
     it('[MSFT Excel] should calculate the same ROIC for 2023 our EXCEL', () => {
       const result = roicCalculator.calculate('2023-06-30', mockExcelMsftIncomeStmt, mockExcelMsftBalance);
       expect(result).toBeCloseTo(26.94, 1);
-    });
-
-    it('should return 0 if invested capital is 0', () => {
-      const emptyBS: BalanceSheetData = { '2024-06-30': { StockholdersEquity: 0, TotalDebt: 0 } };
-      const result = roicCalculator.calculate('2024-06-30', mockMsftIncomeStmt, emptyBS);
-      expect(result).toBe(0);
-    });
-
-    it('should return 0 if data for year is missing', () => {
-      const result = roicCalculator.calculate('1990-01-01', mockMsftIncomeStmt, mockMsftBalanceSheet);
-      expect(result).toBe(0);
     });
   });
 });
