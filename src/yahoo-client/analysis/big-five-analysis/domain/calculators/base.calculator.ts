@@ -87,15 +87,11 @@ export class BaseCalculator {
     }
 
     // Average growth rate (only for non-zero values, or simple average)
-    // const validGrowthRates = [growthRates.tenYear, growthRates.fiveYear, growthRates.oneYear].filter((g) => g !== 0);
-
     const maxYearsAvailable = mostRecent.year - sortedValues[sortedValues.length - 1].year;
     const periodsToAverage = [];
     if (maxYearsAvailable >= 1) periodsToAverage.push(growthRates.oneYear);
     if (maxYearsAvailable >= 5) periodsToAverage.push(growthRates.fiveYear);
     if (maxYearsAvailable >= 10) periodsToAverage.push(growthRates.tenYear);
-
-    // const periods = [growthRates.tenYear, growthRates.fiveYear, growthRates.oneYear].filter((r) => r !== 0);
 
     growthRates.average =
       periodsToAverage.length > 0 ? periodsToAverage.reduce((sum, val) => sum + val, 0) / periodsToAverage.length : 0;
@@ -108,5 +104,29 @@ export class BaseCalculator {
    */
   protected meetsThreshold(value: number): boolean {
     return value >= BaseCalculator.PHIL_TOWN_THRESHOLD;
+  }
+
+  /**
+   * Checks if a value is a valid number (not NaN, not Infinity)
+   */
+  protected isValidNumber(value: any): value is number {
+    return typeof value === 'number' && !isNaN(value) && Number.isFinite(value);
+  }
+
+  /**
+   * Business Validation: if value is valid for type of key
+   */
+  protected isBusinessValueValid(key: string, value: number): boolean {
+    const strictlyPositiveKeys = ['TotalRevenue', 'DilutedAverageShares'];
+    if (strictlyPositiveKeys.includes(key) && value <= 0) return false;
+
+    return true;
+  }
+
+  /**
+   * Utility tool to check if a data-year exist in both reports
+   */
+  protected hasDataForYear(year: string, ...dataSources: any[]): boolean {
+    return dataSources.every((source) => source && source[year] !== undefined);
   }
 }
