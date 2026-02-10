@@ -12,6 +12,10 @@ class PublicBaseCalculator extends BaseCalculator {
   public testCalculateGrowthRates(values: YearValue[]) {
     return this.calculateGrowthRates(values);
   }
+
+  public testGetSortedYears(data: any): string[] {
+    return this.getSortedYears(data);
+  }
 }
 
 describe('BaseCalculator', () => {
@@ -61,6 +65,7 @@ describe('BaseCalculator', () => {
     it('should return 0 if `years` is 0 or negative', () => {
       expect(calculator.testCalculateCAGR(100, 200, 0)).toBe(0);
       expect(calculator.testCalculateCAGR(100, 200, -5)).toBe(0);
+      expect(calculator.testCalculateCAGR(100, 200, -5)).toEqual(0);
     });
   });
 
@@ -84,6 +89,30 @@ describe('BaseCalculator', () => {
       const rates = calculator.testCalculateGrowthRates([{ year: 2024, value: 100 }]);
       expect(rates.tenYear).toBe(0);
       expect(rates.average).toBe(0);
+    });
+
+    it('should return 0 if periodsToAverage is empty', () => {
+      const rates = calculator.testCalculateGrowthRates([
+        { year: 2024, value: 100 },
+        { year: 2023, value: 90 },
+      ]);
+      expect(rates.oneYear).toBeCloseTo(11.11, 2);
+      expect(rates.average).toBeCloseTo(11.11, 2);
+    });
+
+    it('should cover the average branch when no growth rates are calculated', () => {
+      const sameYearData: YearValue[] = [
+        { year: 2024, value: 100 },
+        { year: 2024, value: 110 },
+      ];
+
+      const rates = calculator.testCalculateGrowthRates(sameYearData);
+      expect(rates.average).toBe(0);
+    });
+
+    it('should return an empty array if data is null or undefined', () => {
+      const years = calculator.testGetSortedYears(null);
+      expect(years).toEqual([]);
     });
   });
 });
