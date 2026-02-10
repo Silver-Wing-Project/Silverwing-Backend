@@ -11,18 +11,24 @@ export class BVPSGrowthCalculator extends BaseCalculator {
    * Calculate BVPS for a specific Year
    * Formula: BVPS = Equity / Diluted Shares Outstanding
    */
-  private calculateBVPS(year: string, incomeStmt: IncomeStmtData, balanceSheet: BalanceSheetData): number {
-    try {
-      const equity = balanceSheet[year]?.StockholdersEquity || 0;
-      const shares = incomeStmt[year]?.DilutedAverageShares || 0;
+  private calculateBVPS(year: string, incomeStmt: IncomeStmtData, balanceSheet: BalanceSheetData): number | null {
+    if (!this.hasDataForYear(year, incomeStmt, balanceSheet)) return null;
 
-      if (shares === 0) return 0;
+    const equity = balanceSheet[year]?.StockholdersEquity;
+    const shares = incomeStmt[year]?.DilutedAverageShares;
 
-      return equity / shares;
-    } catch (error) {
-      console.error(`Error calculating BVPS ${error}`);
-      return 0;
+    if (
+      !(
+        this.isValidNumber(equity) &&
+        this.isValidNumber(shares) &&
+        this.isBusinessValueValid('DilutedAverageShares', shares)
+      ) ||
+      equity < 0
+    ) {
+      return null;
     }
+
+    return equity / shares;
   }
 
   /**
@@ -33,10 +39,9 @@ export class BVPSGrowthCalculator extends BaseCalculator {
     const values: YearValue[] = [];
 
     for (const yearStr of years) {
-      const year = this.extractYear(yearStr);
       const bvps = this.calculateBVPS(yearStr, incomeStmt, balanceSheet);
 
-      if (bvps > 0) values.push({ year, value: bvps });
+      if (bvps !== undefined && bvps !== null) values.push({ year: this.extractYear(yearStr), value: bvps });
     }
 
     return this.calculateGrowthRates(values);
