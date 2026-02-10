@@ -16,9 +16,9 @@ export class FCFGrowthCalculator extends BaseCalculator {
 
     for (const yearStr of years) {
       const year = this.extractYear(yearStr);
-      const fcf = cashFlow[yearStr]?.FreeCashFlow || 0;
+      const fcf = cashFlow[yearStr]?.OperatingCashFlow;
 
-      if (fcf > 0) values.push({ year, value: fcf });
+      if (fcf !== undefined && fcf !== null && !Number.isNaN(fcf)) values.push({ year, value: fcf });
     }
 
     return this.calculateGrowthRates(values);

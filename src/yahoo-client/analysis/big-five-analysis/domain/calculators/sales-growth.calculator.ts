@@ -16,9 +16,7 @@ export class SalesGrowthCalculator extends BaseCalculator {
       const year = this.extractYear(yearStr);
       const revenue = incomeStmt[yearStr]?.TotalRevenue;
 
-      if (typeof revenue === 'number' && revenue !== 0) {
-        values.push({ year, value: revenue });
-      }
+      if (revenue !== undefined && revenue !== null) values.push({ year, value: revenue });
     }
 
     return this.calculateGrowthRates(values);

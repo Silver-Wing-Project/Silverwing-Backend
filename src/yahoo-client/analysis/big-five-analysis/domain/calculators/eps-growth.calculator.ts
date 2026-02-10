@@ -16,9 +16,9 @@ export class EPSGrowthCalculator extends BaseCalculator {
 
     for (const yearStr of years) {
       const year = this.extractYear(yearStr);
-      const eps = incomeStmt[yearStr]?.DilutedEPS || 0;
+      const eps = incomeStmt[yearStr]?.DilutedEPS;
 
-      if (eps > 0) values.push({ year, value: eps });
+      if (eps !== undefined && eps !== null && !Number.isNaN(eps)) values.push({ year, value: eps });
     }
 
     return this.calculateGrowthRates(values);
