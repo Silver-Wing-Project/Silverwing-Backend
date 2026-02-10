@@ -124,15 +124,23 @@ describe('BigFiveAnalysisService', () => {
         /Missing reports for MSFT: Balance Sheet, Cash Flow/,
       );
     });
+
+    it('should specifically identify when the Income Statement is missing', async () => {
+      jest.spyOn(stockReportService, 'findManyStockReports').mockResolvedValue([]);
+
+      await expect(service.fetchAndCalculate('MSFT')).rejects.toThrow(
+        /Missing reports for MSFT: Financials \(Income Statement\), Balance Sheet, Cash Flow/,
+      );
+    });
   });
 
   describe('Boundary testing', () => {
     it('should return CONSIDER status if only 3 metrics pass', async () => {
-      mockCalculators.roic.calculateMostRecent.mockReturnValue(15); // PASS (1)
-      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 12 }); // PASS (2)
-      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 12 }); // PASS (3)
-      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 5 }); // FAIL (4)
-      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 5 }); // FAIL (5)
+      mockCalculators.roic.calculateMostRecent.mockReturnValue(15);
+      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 12 });
+      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 12 });
+      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 5 });
+      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 5 });
 
       const mockData: any = {
         incomeStmt: { '2025-01-01': {} },
@@ -144,6 +152,25 @@ describe('BigFiveAnalysisService', () => {
 
       expect(result.recommendation.status).toBe('CONSIDER');
       expect(result.recommendation.metricsPassingThreshold).toBe(3);
+    });
+
+    it('should return PASS status if only 2 metrics pass', async () => {
+      mockCalculators.roic.calculateMostRecent.mockReturnValue(15);
+      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 12 });
+      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 5 });
+      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 5 });
+      mockCalculators.growth.calculate.mockReturnValueOnce({ average: 5 });
+
+      const mockData: any = {
+        incomeStmt: { '2025-01-01': {} },
+        balanceSheet: {},
+        cashFlow: {},
+      };
+
+      const result = await service.calculateBigFive('AAPL', mockData);
+
+      expect(result.recommendation.status).toBe('PASS');
+      expect(result.recommendation.metricsPassingThreshold).toBe(2);
     });
   });
 

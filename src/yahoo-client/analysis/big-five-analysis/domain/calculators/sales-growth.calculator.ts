@@ -6,16 +6,17 @@ import { IncomeStmtData, GrowthRates, YearValue } from './../interfaces/big-five
 export class SalesGrowthCalculator extends BaseCalculator {
   /**
    * Calculate sales growth rates
+   * Filters out 0 or missing revenue years to ensure CAGR validity
    */
-  calculate(incomeStmt: IncomeStmtData): GrowthRates {
+  public calculate(incomeStmt: IncomeStmtData): GrowthRates {
     const years = this.getSortedYears(incomeStmt);
     const values: YearValue[] = [];
 
     for (const yearStr of years) {
       const year = this.extractYear(yearStr);
-      const sales = incomeStmt[yearStr]?.TotalRevenue || 0;
+      const revenue = incomeStmt[yearStr]?.TotalRevenue;
 
-      if (sales > 0) values.push({ year, value: sales });
+      if (revenue !== undefined && revenue !== null) values.push({ year, value: revenue });
     }
 
     return this.calculateGrowthRates(values);

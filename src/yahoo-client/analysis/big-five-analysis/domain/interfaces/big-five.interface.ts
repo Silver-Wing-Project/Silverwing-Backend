@@ -69,7 +69,7 @@ export interface BalanceSheetData {
  */
 export interface CashFlowData {
   [year: string]: {
-    FreeCashFlow: number; // For FCF Growth (already calculated!)
+    OperatingCashFlow: number; // For FCF Growth (already calculated!)
   };
 }
 
